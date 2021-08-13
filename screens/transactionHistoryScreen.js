@@ -7,7 +7,7 @@ export default function TransactionHistoryScreen ({ route }) {
 
     const mobile = route.params.mobile
 
-    const [transactions, setTransactions] = useState([]);
+    const [transactions, setTransactions] = useState();
     const [refreshing, setRefreshing] = useState(false);
     const [users, setUsers] = useState()
 
@@ -19,10 +19,11 @@ export default function TransactionHistoryScreen ({ route }) {
                 [], 
                 (_tx, {rows: {_array} }) => {
                     console.log('LOADED USERS:')
+                    var dict = {}
                     for (var i = 0; i < _array.length; i++) {
-                        console.log(i)
+                        dict[_array[i].mobile] = _array[i].name 
                     }
-                    setUsers(_array.reverse())
+                    setUsers(dict)
                     console.log(users)
                 }, 
                 () => console.log('Fetching USERS FOR HISTORY FAILED!')
@@ -41,7 +42,7 @@ export default function TransactionHistoryScreen ({ route }) {
                 (_tx, {rows: {_array} }) => {
                     console.log('LOADED TRANSACTIONS:')
                     setTransactions(_array.reverse())
-                    // console.log(transactions)
+                    console.log(transactions)
                 }, 
                 () => console.log('Fetching TRANSACTION FOR HISTORY FAILED!')
             )
@@ -58,7 +59,7 @@ export default function TransactionHistoryScreen ({ route }) {
                 (_tx, {rows: {_array} }) => {
                     console.log('LOADED TRANSACTIONS:')
                     setTransactions(_array.reverse())
-                    // console.log(transactions)
+                    console.log(transactions)
                 }, 
                 () => console.log('Fetching TRANSACTION FOR HISTORY FAILED!')
             )
@@ -67,8 +68,9 @@ export default function TransactionHistoryScreen ({ route }) {
 
     useEffect(() => {
 
-        loadTransactions()
         loadUsers()
+        loadTransactions()
+        
 
         // socket.on("add new transactions", transactions => {
         //     console.log('This is inside add new transactions event listner in TRANSACTION HISTORY SCREEN')
@@ -85,7 +87,7 @@ export default function TransactionHistoryScreen ({ route }) {
             <FlatList 
                 data={transactions}
                 renderItem={({item}) => (
-                    <TransactionCard mobile={mobile}>{item}</TransactionCard> 
+                    <TransactionCard mobile={mobile} users={users}>{item}</TransactionCard> 
                 )}
                 onRefresh={refreshTransactions}
                 refreshing={refreshing}
