@@ -156,6 +156,7 @@ export default function SignInScreen({ navigation }) {
                         autoCapitalize='none'
                         onChangeText={(val) => textInputChange(val)}
                         keyboardType='phone-pad'
+                        maxLength={10}
                     />
                     {data.check_textInputChange ?  
 

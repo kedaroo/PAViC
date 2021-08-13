@@ -3,13 +3,19 @@ import { FlatList, StyleSheet, Text, View, Image, Button, TouchableOpacity } fro
 
 export default function TransactionCard(props) {
 
+    var users = props.users;
+    console.log('THIS IS INSIDE TRANSACTION CARD: ', users)
+
     if (props.children.from_add == props.mobile) {
-        // console.log('NAME:::::::::::::::::::::', props.user)
-        var placeholder = props.children.to_add
+        console.log('NAME:::::::::::::::::::::', users[props.children.to_add])
+        // var placeholder = props.children.to_add
+        var placeholder = users[props.children.to_add]
         var logo = require('../assets/outgoing.png')
         var bg = '#FEE2E2'
     } else {
-        var placeholder = props.children.from_add
+        console.log('NAME:::::::::::::::::::::', users[props.children.from_add])
+        // var placeholder = props.children.from_add
+        var placeholder = users[props.children.from_add]
         var logo = require('../assets/incoming.png')
         var bg = '#D1FAE5'
     }

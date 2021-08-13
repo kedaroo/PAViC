@@ -32,6 +32,7 @@ export default function Home ({ route, navigation }) {
 
     // const user = userName
     const [balance, setBalance] = useState('Loading...')
+    const [users, setUsers] = useState()
     
     const fetchUserBalance = async (user) => {
         var x = await startUp(user)
@@ -59,6 +60,29 @@ export default function Home ({ route, navigation }) {
     // }
 
     // getMyObject()
+
+    const loadUsers = () => {
+        db.transaction((tx) => {
+            console.log('TRYING TO LOAD USERS FOR HistoryScreen...')
+            tx.executeSql(
+                'SELECT name, mobile FROM users',
+                [], 
+                (_tx, {rows: {_array} }) => {
+                    console.log('LOADED USERS:')
+                    var dict = []
+                    for (var i = 0; i < _array.length; i++) {
+                        dict.push(_array[i].name)
+                    }
+                    setUsers(dict)
+                    console.log(users)
+                }, 
+                () => console.log('Fetching USERS FOR HISTORY FAILED!')
+            )
+        }, () => console.log('Fetching USERS FOR HISTORY error'), () => console.log('Fetching USERS FOR HISTORY SUCCESSFULL'));
+      }
+    
+      
+    //   console.log(users)
 
 
     useEffect(() => {
@@ -159,6 +183,8 @@ export default function Home ({ route, navigation }) {
         console.log('FETCHUSERBALANCE CALLLED:=========================================================')
 
         fetchUserBalance(mobile)
+        loadUsers()
+        console.log(users)
 
     }, []);
 
@@ -166,15 +192,15 @@ export default function Home ({ route, navigation }) {
     // fetchUserBalance(user)
     
     const addTransaction = async (transaction) => {
+        var userBalance = await getBalance(transaction.from)
+        if (parseInt(transaction.amount) > userBalance) {
+            Alert.alert('Transaction Error', 'You have insufficient balance')
+            setModalOpen(false)
+            return
+        }
         socket.once("transaction acknowledgement", data => {
             Alert.alert('',data.message)
         })
-        // var userBalance = await getBalance(transaction.from)
-        // if (parseInt(transaction.amount) > userBalance) {
-        //     Alert.alert('Transaction Error', 'You have insufficient balance')
-        //     setModalOpen(false)
-        //     return
-        // }
         console.log('TRANSACTION emitted: ', transaction)
         socket.emit("transaction", transaction);
         setModalOpen(false)
@@ -223,15 +249,17 @@ export default function Home ({ route, navigation }) {
 
 
             <Modal visible = {modalOpen} animationType='slide' onRequestClose = {() => setModalOpen(false)} style = {styles.modal} >
-                 <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
+                 <TouchableWithoutFeedback onPress = {Keyboard.dismiss} style = {styles.modal}>
                      <View style={styles.modalContent}>
-                         <MaterialIcons 
+                     <MaterialIcons 
                             name = 'close'
                             size = {24}
                             onPress = {() => setModalOpen(false)}
                             style = {{ ...styles.modalToggle, ...styles.modalClose}}
                         />
-                        <TransactionForm addTransaction = {addTransaction} mobile={mobile}/>
+                     <TransactionForm addTransaction = {addTransaction} mobile={mobile} users={users}/>
+                         
+                        
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
@@ -249,7 +277,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F9FAFB'
     },  
     modalToggle: {
-        marginBottom: 10,
+        marginBottom: 30,
         borderWidth: 1,
         borderColor: 'pink',
         padding: 10,
@@ -257,13 +285,15 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     modalClose: {
-        marginTop: 20,
-        marginBottom: 0
+        marginTop: 40,
+        marginBottom: 40
     },
     modalContent: {
         flex: 1,
+        // backgroundColor: 'pink'
     },
     modal: {
+        flex: 1,
         backgroundColor: 'green'
     },
     profileCard: {

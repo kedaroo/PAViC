@@ -47,6 +47,7 @@ export default function TransactionForm({ addTransaction, mobile}) {
                             value = {props.values.to}
                             onBlur = {props.handleBlur('to')}
                             keyboardType = 'number-pad'
+                    
                         />
                         <Text style = {globalStyles.errorText}>{props.touched.to && props.errors.to}</Text>
 
