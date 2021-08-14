@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Modal, TouchableWithoutFeedback, Keyboard, Alert, Text, Image,
-    TouchableHighlight } from 'react-native';
+    TouchableHighlight, ImageBackground } from 'react-native';
 import { SHA256 } from 'crypto-js';
 import db from '../database/database';
 import socket from '../service/socket';
@@ -18,7 +18,7 @@ export default function Home ({ route, navigation }) {
 
     const [modalOpen, setModalOpen] = useState(false)
     // console.log('GIVEN NAME:::::', JSON.parse(route.params.token).given_name)
-    const user = JSON.parse(route.params.token).given_name
+    const user = JSON.parse(route.params.token).name
     const image = JSON.parse(route.params.token).picture
     const userId = JSON.parse(route.params.token).sub
     const mobile = route.params.mobile
@@ -211,7 +211,7 @@ export default function Home ({ route, navigation }) {
 
             <View style={styles.profileCard}>
                 <View>
-                    <Text style={styles.hello}>Hello,</Text>
+                    <Text style={styles.welcome}>Welcome</Text>
                     <Text style={styles.userName}>{user}</Text>
                 </View>
 
@@ -223,29 +223,71 @@ export default function Home ({ route, navigation }) {
                 </View>
             </View>
 
-            <Animatable.View animation='pulse' iterationCount={4}>
-                <LinearGradient
+            
+            <Animatable.View animation='pulse' iterationCount={4} >
+                {/* <LinearGradient
                     colors={['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8'].reverse()}
                     start={{ x: 0, y: 0}}
                     end={{x: 1, y: 1}}
                     style={styles.balanceCard}
-                >
-                    <Text style={styles.currentBalance}>Current Balance:</Text>
+                > */}
+                <ImageBackground source={require('../assets/cardBg.png')} style={styles.balanceCard} imageStyle={{borderRadius: 32}}>
+                    <Text style={styles.currentBalance}>Balance</Text>
                     <Text style={styles.amount}>{balance} vc</Text>
-                </LinearGradient>
+                    <Text style={{...styles.currentBalance, marginTop:16}}>Mining Reward</Text>
+                    <Text style={{...styles.amount, fontSize: 36}}>{balance} vc</Text>
+                </ImageBackground>
+                {/* </LinearGradient> */}
             </Animatable.View>
+            
+
+            <Text style={{fontSize: 22, fontWeight: 'bold', paddingHorizontal: 10, color: '#4B5563', 
+                    paddingTop: 24}}>Mine Transactions</Text>
+
+            <View>
+                {/* <LinearGradient
+                    colors={['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8'].reverse()}
+                    start={{ x: 0, y: 0}}
+                    end={{x: 1, y: 1}}
+                    style={styles.balanceCard}
+                > */}
+                {/* <ImageBackground source={require('../assets/mineBg.png')} style={styles.miningCard} imageStyle={{borderRadius: 32}}> */}
+                <View style={styles.miningCard}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    
+                    <Text style={{...styles.currentBalance, fontSize: 20, color: '#4B5563'}}>Pending Transactions:</Text>
+                    <Text style={{...styles.amount, fontSize: 24, color: '#4B5563'}}>{balance}</Text>
+                    
+                </View>
+                <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => mineBlock(2)}>
+                        <Text style={styles.buttonText}>Mine Transactions</Text>
+                </TouchableHighlight>
+                </View>
+                    
+                    
+
+                    
+                
+
+                    
+                    {/* <Text style={{...styles.currentBalance, marginTop:18}}>Mining Reward</Text> */}
+                    {/* <Text style={{...styles.amount, fontSize: 36}}>{balance} vc</Text> */}
+                {/* </ImageBackground> */}
+                {/* </LinearGradient> */}
+            </View>
+            
 
             
 
-            <View style={styles.buttonsCard}>
+            {/* <View style={styles.buttonsCard}>
                 <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => mineBlock(2)}>
                         <Text style={styles.buttonText}>Mine</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => setModalOpen(true)}>
+                {/* <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => setModalOpen(true)}>
                         <Text style={styles.buttonText}>Pay </Text>
-                </TouchableHighlight>
-            </View>
+                </TouchableHighlight> */}
+            {/* </View> */} 
 
 
             <Modal visible = {modalOpen} animationType='slide' onRequestClose = {() => setModalOpen(false)} style = {styles.modal} >
@@ -274,8 +316,16 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         paddingTop: 30,
-        backgroundColor: '#F9FAFB'
+        backgroundColor: '#f3f3f3'
     },  
+    miningCard: {
+        backgroundColor: '#fff',
+        // elevation: 10,
+        marginHorizontal: 10,
+        borderRadius: 24,
+        padding: 20,
+        marginVertical: 10
+    },
     modalToggle: {
         marginBottom: 30,
         borderWidth: 1,
@@ -302,29 +352,32 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    hello: {
+    welcome: {
         color: '#6B7280',
-        fontSize: 22,
+        fontSize: 18,
     },
     userName: {
         color: '#4B5563',
-        marginTop: -6,
-        fontSize: 44,
+        // color: '#1E3A8A',
+        // marginTop: -6,
+        fontSize: 28,
         fontWeight: '700'
     },
     profilePic: {
-        width: 100,
-        height: 100,
+        width: 60,
+        height: 60,
         resizeMode: 'cover',
         borderColor: 'blue',
-        borderRadius: 100
+        borderRadius: 20
     },
     balanceCard: {
-        marginTop: 40,
+        marginTop: 14,
         marginHorizontal: 10,
-        paddingHorizontal: 20,
-        paddingVertical: 40, 
-        borderRadius: 20,
+        padding: 18,
+        // paddingHorizontal: 20,
+        // paddingVertical: 40, 
+        // borderRadius: 20,
+        // resizeMode: 'cover'
     },
     currentBalance: {
         color: 'white',
@@ -343,16 +396,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     buttons: {
-        backgroundColor: '#3B82F6',
+        backgroundColor: '#4f6cf6',
         paddingVertical: 12,
-        paddingHorizontal: 45,
-        borderRadius: 50,
+        // paddingHorizontal: 45,
+        marginTop: 22,
+        marginHorizontal: 32,
+        borderRadius: 14,
         justifyContent: 'center',
-        elevation: 5
+        // elevation: 5
     },
     buttonText: {
         color: 'white',
-        fontSize: 18,
-        alignItems: 'center'
+        fontSize: 17,
+        alignItems: 'center',
+        textAlign: 'center'
     },
 })
