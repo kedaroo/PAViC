@@ -3,7 +3,6 @@ import { View, Text, TextInput, StyleSheet, TouchableHighlight, KeyboardAvoiding
 import { globalStyles } from '../styles/global';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import FlatButton from '../shared/button';
 
 const reviewSchema = yup.object().shape({
     from: yup.string()
@@ -17,7 +16,7 @@ const reviewSchema = yup.object().shape({
       .required(),
   });
 
-export default function TransactionForm({ addTransaction, mobile}) {
+export default function TransactionForm({ addTransaction, mobile }) {
     styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -76,12 +75,16 @@ export default function TransactionForm({ addTransaction, mobile}) {
             textAlign: 'center'
         }
     })
+
+    // console.log('IM INSIDE TRANSACTION FORM', addTransaction)
     return (
         <View style = {styles.container}>
+            
             <Formik
                 initialValues = {{ from: mobile, to: 0, amount: 0 }}
                 validationSchema = {reviewSchema}
                 onSubmit = {(values, actions) => {
+                    console.log('IM INSIDE SUBMIT HANDLER')
                     actions.resetForm()
                     addTransaction(values);
                 }}
@@ -127,11 +130,13 @@ export default function TransactionForm({ addTransaction, mobile}) {
                                 onBlur = {props.handleBlur('amount')}
                             />
                             <Text style = {globalStyles.errorText}>{props.touched.amount && props.errors.amount}</Text>
-                            </View>
 
                             <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {props.handleSubmit}>
-                            <Text style={styles.buttonText}>Send Money</Text>
+                                <Text style={styles.buttonText}>Send Money</Text>
                             </TouchableHighlight>
+                            </View>
+
+                            
 
                         </View>
                     </View>

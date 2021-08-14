@@ -12,6 +12,7 @@ import TransactionHistoryScreen from './screens/transactionHistoryScreen';
 import UserScreen from './screens/userScreen';
 import TransactionForm from './screens/transactionForm';
 import HomeStackScreen from './screens/homeStack';
+import MakePaymentScreen from './screens/makePaymentScreen';
 
 import RootStackScreen from './screens/RootStackScreen';
 
@@ -270,10 +271,11 @@ export default function App() {
                 tabBarInactiveTintColor: 'gray',
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarHideOnKeyboard: true,
+                // tabBarHideOnKeyboard: true,
                 tabBarStyle: {
-                   bottom: 20, left: 20, right: 20, backgroundColor: '#fff',
-                  borderRadius: 15, height: 60, elevation: 0, position: 'absolute'
+                  //  bottom: 20, left: 20, right: 20, backgroundColor: '#fff',
+                  // borderRadius: 15,
+                   height: 60, elevation: 0, position: 'absolute'
                 }
               })}
             >
@@ -289,7 +291,7 @@ export default function App() {
               tabBarButton: (props) => (
                 <CustomButton {...props}/>
               )
-            }} name="Transaction Form" component={TransactionForm} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            }} name="Transaction Form" component={MakePaymentScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
             <Tab.Screen name="Recent Transactions" component={TransactionHistoryScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
             {/* <Tab.Screen name="My Profile" component={UserScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} /> */}
           </Tab.Navigator> 

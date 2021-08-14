@@ -11,7 +11,7 @@ function createUsersTable() {
               'CREATE TABLE if NOT EXISTS users (id integer primary key AUTOINCREMENT, name text, user_id text unique, picture text, mobile integer)', 
                 [], 
                 (_tx, {rows}) => {
-                    console.log('CREATE TABLE users SUCCESS!::', rows)
+                    // console.log('CREATE TABLE users SUCCESS!::', rows)
                     resolve(rows)
                 }, 
                 () => console.log('CREATE TABLE users FAILED!')
@@ -27,7 +27,7 @@ function updateUsers() {
                 'SELECT COUNT(*) FROM users',
                 [],
                 (_tx, {rows: {_array}}) => {
-                  console.log('0.1 FETCH USERS EMITTED SUCCESSFULLYY::', _array[0]['COUNT(*)'])
+                //   console.log('0.1 FETCH USERS EMITTED SUCCESSFULLYY::', _array[0]['COUNT(*)'])
                   socket.emit("fetch users", _array[0]['COUNT(*)']);
                 //   resolve(_array)
                 }
@@ -36,7 +36,7 @@ function updateUsers() {
 
         socket.once("update users", users => {
             console.log('This is inside UPDATE USERS listener')
-            console.log('RECEIVED USERS::', users)
+            // console.log('RECEIVED USERS::', users)
             if (users.data.length != 0) {
                 // console.log(blocks)
                 for (let user of users.data) {
@@ -68,7 +68,7 @@ function createBlocksTable() {
               'CREATE TABLE if NOT EXISTS blocks (id integer primary key AUTOINCREMENT, prev_hash text, hash text, nonce integer not null)', 
                 [], 
                 (_tx, {rows}) => {
-                    console.log('CREATE TABLE blocks SUCCESS!::', rows)
+                    // console.log('CREATE TABLE blocks SUCCESS!::', rows)
                     resolve(rows)
                 }, 
                 () => console.log('CREATE TABLE blocks FAILED!')
@@ -92,13 +92,13 @@ function addGenesisBlock() {
                                 "INSERT INTO blocks (prev_hash, hash, nonce) VALUES (?, ?, ?)",
                                 ['0', SHA256('0').toString(), 0],
                                 (_tx, {rows: {_array}}) => {
-                                    console.log('GENESIS BLOCK ADDED::', _array)
+                                    // console.log('GENESIS BLOCK ADDED::', _array)
                                     resolve(_array)
                                 }
                             )
                         }, (tx, err) => console.log(err))
                     } else {
-                        console.log('GENESIS BLOCK NOT ADDED::', _array)
+                        // console.log('GENESIS BLOCK NOT ADDED::', _array)
                         resolve(_array)
                     }
                 }
@@ -117,7 +117,7 @@ function createTransactionsTable() {
                   [], 
                   (_tx, {rows: {_array}}) => {
                     //   console.log(_array)
-                      console.log('TRANSACTIONS TABLE CREATE SUCCESS::', _array)
+                    //   console.log('TRANSACTIONS TABLE CREATE SUCCESS::', _array)
                       resolve(_array)
                   }, 
                   () => console.log('CREATE TABLE transactions FAILED!')
@@ -160,7 +160,7 @@ function updateBlocks() {
 
         socket.once("update blocks", blocks => {
             console.log('This is inside UPDATE BLOCKS listener')
-            console.log('RECEIVED BLOCKS::', blocks)
+            // console.log('RECEIVED BLOCKS::', blocks)
             if (blocks.data.length != 0) {
                 // console.log(blocks)
                 for (let block of blocks.data) {

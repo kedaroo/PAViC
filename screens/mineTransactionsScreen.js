@@ -1,9 +1,12 @@
+import React from 'react';
+import { Alert } from 'react-native';
 import socket from '../service/socket';
 import db from '../database/database';
 import { SHA256 } from 'crypto-js';
 
+
 // fetching pending transactions
-function fetchPendingTransactions() {
+function fetchPendingTransactions(mobile) {
     return new Promise(function(resolve, reject) {
         socket.emit("fetch pending transactions", null);
         socket.once("pending transactions", Transactions => {
@@ -18,8 +21,17 @@ function fetchPendingTransactions() {
                         (tx, err) => console.log(err)
                     )
                 }
+                tx.executeSql(
+                    'INSERT INTO pending_transactions (from_add, to_add, amount) VALUES (?, ?, ?)',
+                    [0, mobile, 500], 
+                    (_tx, {rows: {_array} }) => {
+                        console.log('Insert MINING REWARD into pending_transactions SUCCESFULL')
+                    }, 
+                    (tx, err) => console.log(err)
+                )
             }, () => console.log('PENDING TRANSACTIONS FETCH AND INSERT error'), () => console.log('PEDNING_TRANSACTION FETCH AND INSERT SUCCESSFULL'))
-            resolve(Transactions.data)
+            console.log("LOOK HEREEEEEEEEEEEEEEEEEEEEEE::::::::", Transactions.data)
+            resolve([Transactions.data, [0, mobile, 500]])
         });
     });
 }
@@ -30,11 +42,11 @@ function fetchPrevHash() {
         // fetching prevHash
         db.transaction((tx) => {
             tx.executeSql(
-                'SELECT prev_hash FROM blocks ORDER BY id DESC LIMIT 1',
+                'SELECT hash FROM blocks ORDER BY id DESC LIMIT 1',
                 [], 
                 (_tx, {rows: {_array} }) => {
                     console.log('PREV_HASH FETCHED')
-                    resolve(_array[0].prev_hash)
+                    resolve(_array[0].hash)
                 }, 
                 () => console.log('Fetching prev_hash FAILED!')
             )
@@ -42,7 +54,7 @@ function fetchPrevHash() {
     })
 }
 
-const mineBlock = async (difficulty) => {
+const mineBlock = async (difficulty, mobile) => {
 
     console.log('============================================================')
     console.log('mineBlock FUNCTION INVOKED')
@@ -59,7 +71,12 @@ const mineBlock = async (difficulty) => {
 
     console.log('FETCHING PENDING TRANSACTIONS')
 
-    var pending_transactions = await fetchPendingTransactions();
+    var pending_transactions = await fetchPendingTransactions(mobile);
+
+    if (pending_transactions.length == 0) {
+        Alert.alert('Mining Error', 'There are no pending Transactions to mine')
+        return
+    }
     
     console.log('PENDING TRANSACTIONS FETCHED: ', pending_transactions)
 
@@ -76,7 +93,7 @@ const mineBlock = async (difficulty) => {
 
     console.log('MINING PROCESS FINISHED')
 
-    socket.emit("block mined", [hashString, counter]);
+    socket.emit("block mined", [prevHash, hashString, counter, [0, parseInt(mobile), 500]]);
 
     socket.connect()
 }

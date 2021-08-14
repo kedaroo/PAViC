@@ -24,9 +24,35 @@ export default function Home ({ route, navigation }) {
     const mobile = route.params.mobile
     
     const [balance, setBalance] = useState('...')
+    const [pendingTransactions, setPendingTransactions] = useState(0)
     const [users, setUsers] = useState()
+    const [mineButtonText, setMineButtonText] = useState('Fetch Transactions')
 
     const { signOut } = useContext(AuthContext)
+
+    const mineButtonHandler = () => {
+        // mineBlock(5)
+        // socket.emit("fetch pending transactions")
+        //     socket.once("pending transactions", Transactions => {
+        //         console.log(Transactions)
+        //         setPendingTransactions(Transactions.data.length)
+        //     })
+        if (mineButtonText == 'Fetch Transactions') {
+            socket.emit("fetch pending transactions")
+            socket.once("pending transactions", Transactions => {
+                console.log(Transactions.data)
+                setPendingTransactions(Transactions.data.length)
+                if (Transactions.data.length > 0) {
+                    setMineButtonText('Mine Transactions')
+                }
+            })
+        } else {
+            setMineButtonText('Mining...')
+            mineBlock(4, mobile)
+            setMineButtonText('Fetch Transactions')
+            setPendingTransactions(0)
+        }
+    }
     
     const fetchUserBalance = async (user) => {
         var x = await startUp(user)
@@ -53,7 +79,7 @@ export default function Home ({ route, navigation }) {
                         dict.push(_array[i].name)
                     }
                     setUsers(dict)
-                    console.log(users)
+                    // console.log(users)
                 }, 
                 () => console.log('Fetching USERS FOR HISTORY FAILED!')
             )
@@ -67,13 +93,13 @@ export default function Home ({ route, navigation }) {
         socket.on("add new user", args => {
             console.log('I booooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmm')
             console.log('This is inside add new user event listner')
-            console.log('RECEIVED USER:', args)
+            // console.log('RECEIVED USER:', args)
             db.transaction((tx) => {
                 tx.executeSql(
                     'INSERT INTO users (name, user_id, picture, mobile) VALUES (?, ?, ?, ?)',
                     args,
                     (_tx, {rows }) => {
-                        console.log('INSERTED NEW USER SUCCESSFULLY::', rows)
+                        // console.log('INSERTED NEW USER SUCCESSFULLY::', rows)
                     }, 
                     () => console.log('NEW USER INSERT FAILED')
                 )
@@ -85,13 +111,13 @@ export default function Home ({ route, navigation }) {
         socket.on("add new block", args => {
             console.log('I RANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN')
             console.log('This is inside add new block event listner')
-            console.log('RECEIVED BLOCK:', args)
+            // console.log('RECEIVED BLOCK:', args)
             db.transaction((tx) => {
                 tx.executeSql(
                     'INSERT INTO blocks (prev_hash, hash, nonce) VALUES ((SELECT hash FROM blocks ORDER BY id DESC LIMIT 1), ?, ?)',
                     args, 
                     (_tx, {rows }) => {
-                        console.log('INSERTED NEW BLOCK SUCCESSFULLY::', rows)
+                        // console.log('INSERTED NEW BLOCK SUCCESSFULLY::', rows)
                     }, 
                     () => console.log('NEW BLOCK INSERT FAILED')
                 )
@@ -103,14 +129,14 @@ export default function Home ({ route, navigation }) {
         socket.on("add new transactions", transactions => {
             console.log('I RAN TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
             console.log('This is inside add new transactions event listner')
-            console.log('RECEIVED TRANSACTIONS: ', transactions)
+            // console.log('RECEIVED TRANSACTIONS: ', transactions)
             db.transaction((tx) => {
                 for (var i = 0; i < transactions.data.length; i++) {
                     tx.executeSql(
                         'INSERT INTO transactions (from_add, to_add, amount) VALUES (?, ?, ?)',
                         [transactions.data[i].from_add, transactions.data[i].to_add, transactions.data[i].amount], 
                         (_tx, {rows }) => {
-                            console.log('Insert into transactions SUCCESFULL::', rows)
+                            // console.log('Insert into transactions SUCCESFULL::', rows)
                         }, 
                         (tx, err) => console.log(err)
                     )
@@ -130,6 +156,8 @@ export default function Home ({ route, navigation }) {
                 )
             }, () => console.log('ADD NEW TRANSACTIONS LISTENER error'), () => console.log('ADD NEW TRANSACTIONS SUCCESSFULL'));
 
+            // socket.on("pending transactions", )
+
 
 
             db.transaction((tx) => {
@@ -137,7 +165,7 @@ export default function Home ({ route, navigation }) {
                     'select * from blocks',
                     [], 
                     (_tx, {rows }) => {
-                        console.log('THE BLOCKS::', rows)
+                        // console.log('THE BLOCKS::', rows)
                     }, 
                     () => console.log('NEW BLOCK INSERT FAILED')
                 )
@@ -148,7 +176,7 @@ export default function Home ({ route, navigation }) {
                     'select * from transactions',
                     [], 
                     (_tx, {rows }) => {
-                        console.log('THE BLOCKS::', rows)
+                        // console.log('THE BLOCKS::', rows)
                     }, 
                     () => console.log('NEW BLOCK INSERT FAILED')
                 )
@@ -157,7 +185,7 @@ export default function Home ({ route, navigation }) {
 
         fetchUserBalance(mobile)
         loadUsers()
-        console.log(users)
+        // console.log(users)
 
     }, []);
     
@@ -188,7 +216,7 @@ export default function Home ({ route, navigation }) {
                 <View>
                 <Tooltip popover={
                 <TouchableOpacity onPress={()=>signOut()} activeOpacity={0.8}>
-                    <View style={{flex:1, justifyContent: 'center', paddingHorizontal: 30, paddingVertical: 20}}>
+                    <View style={{flex:1, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 20}}>
                     <Text style={{
                         color:"white",
                         fontSize: 20
@@ -219,19 +247,21 @@ export default function Home ({ route, navigation }) {
             </Animatable.View>
             
 
-            <Text style={{fontSize: 22, fontWeight: 'bold', paddingHorizontal: 10, color: '#4B5563', 
-                    paddingTop: 24}}>Mine Transactions</Text>
+            
 
             <View>
+            <Text style={{fontSize: 22, fontWeight: 'bold', paddingHorizontal: 10, color: '#4B5563', 
+                    paddingTop: 24}}>Mine Transactions</Text>
                 <View style={styles.miningCard}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     
                     <Text style={{...styles.currentBalance, fontSize: 20, color: '#4B5563'}}>Pending Transactions:</Text>
-                    <Text style={{...styles.amount, fontSize: 24, color: '#4B5563'}}>{balance}</Text>
+                    <Text style={{...styles.amount, fontSize: 24, color: '#4B5563'}}>{pendingTransactions}</Text>
                     
                 </View>
-                <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => mineBlock(2)}>
-                        <Text style={styles.buttonText}>Mine Transactions</Text>
+                {/* <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => mineBlock(2)}> */}
+                <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => mineButtonHandler()}>
+                        <Text style={styles.buttonText}>{mineButtonText}</Text>
                 </TouchableHighlight>
                 </View>
             </View>
@@ -260,7 +290,10 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         paddingTop: 30,
-        backgroundColor: '#e7e7e7'
+        // backgroundColor: '#e7e7e7',
+        // backgroundColor: 'pink',
+        marginBottom: 100,
+        justifyContent: 'space-around'
     },  
     miningCard: {
         backgroundColor: '#fff',
