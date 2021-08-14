@@ -239,7 +239,7 @@ export default function Home ({ route, navigation }) {
                 <ImageBackground source={require('../assets/cardBg.png')} style={styles.balanceCard} imageStyle={{borderRadius: 32}}>
                     <Text style={styles.currentBalance}>Balance</Text>
                     <Text style={styles.amount}>{balance} vc</Text>
-                    <Text style={{...styles.currentBalance, marginTop:16}}>Mining Reward</Text>
+                    <Text style={{...styles.currentBalance, marginTop:14}}>Mining Reward</Text>
                     <Text style={{...styles.amount, fontSize: 36}}>{balance} vc</Text>
                 </ImageBackground>
                 {/* </LinearGradient> */}
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     balanceCard: {
-        marginTop: 14,
+        marginTop: 8,
         marginHorizontal: 10,
         padding: 18,
         // paddingHorizontal: 20,
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     },
     amount: {
         color: 'white',
-        fontSize: 52,
+        fontSize: 48,
         fontWeight: 'bold'
     },
 

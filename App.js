@@ -239,7 +239,7 @@ export default function App() {
         width:50,
         height:50,
         borderRadius:35,
-        backgroundColor: '#5e7af8',
+        backgroundColor: '#4161f4',
         elevation: 6
       }}>
         {children}
