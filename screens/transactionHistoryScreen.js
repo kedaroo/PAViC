@@ -82,16 +82,24 @@ export default function TransactionHistoryScreen ({ route }) {
     return (
         <View style = {styles.container} >
 
-            <Text style={styles.title}>Recent Transactions</Text>
+            {/* <Text style={styles.title}>Recent Transactions</Text> */}
+            <View style={{padding: 10, marginTop: 10}}>
+                <Text style={{color: '#374151', fontSize: 24, fontWeight: '700'}}>Recent</Text>
+                <Text style={{color: '#374151', fontSize: 38, fontWeight: '700'}}>Transactions</Text>
+            </View>
 
-            <FlatList 
-                data={transactions}
-                renderItem={({item}) => (
-                    <TransactionCard mobile={mobile} users={users}>{item}</TransactionCard> 
-                )}
-                onRefresh={refreshTransactions}
-                refreshing={refreshing}
-            />
+            <View style={{flex:1}}>
+                <FlatList 
+                    data={transactions}
+                    renderItem={({item}) => (
+                        <TransactionCard mobile={mobile} users={users}>{item}</TransactionCard> 
+                    )}
+                    onRefresh={refreshTransactions}
+                    refreshing={refreshing}
+                />
+            </View>
+
+            
 
         </View>
     )
@@ -102,7 +110,9 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         paddingTop: 20,
-        backgroundColor: '#F9FAFB'
+        paddingBottom: 100,
+        // backgroundColor: '#F9FAFB'
+        // backgroundColor: 'green'
     },  
     title: {
       fontSize: 28,

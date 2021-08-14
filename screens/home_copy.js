@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Modal, TouchableWithoutFeedback, Keyboard, Alert, Text, Image,
     TouchableHighlight, ImageBackground } from 'react-native';
 import { SHA256 } from 'crypto-js';
@@ -13,27 +13,20 @@ import { LinearGradient } from 'expo-linear-gradient';
 import startUp from '../database/db_func';
 import * as Animatable from 'react-native-animatable';
 import { TouchableOpacity } from 'react-native';
-
+import { Tooltip } from 'react-native-elements';
+import { AuthContext } from '../components/context';
 
 export default function Home ({ route, navigation }) {
 
     const [modalOpen, setModalOpen] = useState(false)
-    // console.log('GIVEN NAME:::::', JSON.parse(route.params.token).given_name)
     const user = JSON.parse(route.params.token).name
     const image = JSON.parse(route.params.token).picture
-    const userId = JSON.parse(route.params.token).sub
     const mobile = route.params.mobile
-    console.log('0000000000000000000000000000000000000000000000000000000',mobile)
-
-    // const user = 'Siddhi'
-    // const [user, setUser] = useState('')
-    // console.log(props.initialParams)
-    // const { userName } = route.params
-    // const userName = route.params.userName
-
-    // const user = userName
-    const [balance, setBalance] = useState('Loading...')
+    
+    const [balance, setBalance] = useState('...')
     const [users, setUsers] = useState()
+
+    const { signOut } = useContext(AuthContext)
     
     const fetchUserBalance = async (user) => {
         var x = await startUp(user)
@@ -46,21 +39,6 @@ export default function Home ({ route, navigation }) {
         console.log('THIS is fetched user BALANCE: ', x)
         setBalance(x)
     }
-
-    // getMyObject = async () => {
-    //     try {
-    //       const jsonValue = await AsyncStorage.getItem('userToken')
-    //       const token = JSON.parse(jsonValue)
-    //       setUser(token.given_name)
-    //     // setUser('Siddhi')
-    //       console.log(token.given_name)
-    //     //   return jsonValue != null ? JSON.parse(jsonValue) : null
-    //     } catch(e) {
-    //       console.log(e)
-    //     }  
-    // }
-
-    // getMyObject()
 
     const loadUsers = () => {
         db.transaction((tx) => {
@@ -80,12 +58,8 @@ export default function Home ({ route, navigation }) {
                 () => console.log('Fetching USERS FOR HISTORY FAILED!')
             )
         }, () => console.log('Fetching USERS FOR HISTORY error'), () => console.log('Fetching USERS FOR HISTORY SUCCESSFULL'));
-      }
+    }
     
-      
-    //   console.log(users)
-
-
     useEffect(() => {
 
         console.log('ADD NEW USER LISTENER SUCCESS================================================================')
@@ -154,11 +128,11 @@ export default function Home ({ route, navigation }) {
                     }, 
                     (tx, err) => console.log(err)
                 )
-              }, () => console.log('ADD NEW TRANSACTIONS LISTENER error'), () => console.log('ADD NEW TRANSACTIONS SUCCESSFULL'));
+            }, () => console.log('ADD NEW TRANSACTIONS LISTENER error'), () => console.log('ADD NEW TRANSACTIONS SUCCESSFULL'));
 
 
 
-              db.transaction((tx) => {
+            db.transaction((tx) => {
                 tx.executeSql(
                     'select * from blocks',
                     [], 
@@ -181,16 +155,11 @@ export default function Home ({ route, navigation }) {
             }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
         })
 
-        console.log('FETCHUSERBALANCE CALLLED:=========================================================')
-
         fetchUserBalance(mobile)
         loadUsers()
         console.log(users)
 
     }, []);
-
-    // console.log('HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII')
-    // fetchUserBalance(user)
     
     const addTransaction = async (transaction) => {
         var userBalance = await getBalance(transaction.from)
@@ -217,25 +186,29 @@ export default function Home ({ route, navigation }) {
                 </View>
 
                 <View>
-                    <TouchableOpacity
-                        onPress={()=>{navigation.navigate('User Screen')}}
-                    >
+                <Tooltip popover={
+                <TouchableOpacity onPress={()=>signOut()} activeOpacity={0.8}>
+                    <View style={{flex:1, justifyContent: 'center', paddingHorizontal: 30, paddingVertical: 20}}>
+                    <Text style={{
+                        color:"white",
+                        fontSize: 20
+                    }}>Log Out</Text>
+                    </View>
+                
+                </TouchableOpacity >
+                }
+                    backgroundColor="#4160f3"
+                >
                         <Image 
                             source={{uri: image}} 
                             style={styles.profilePic}
-                        />
-                    </TouchableOpacity>
+                        />   
+                    </Tooltip>
                 </View>
             </View>
 
             
-            <Animatable.View animation='pulse' iterationCount={3} >
-                {/* <LinearGradient
-                    colors={['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8'].reverse()}
-                    start={{ x: 0, y: 0}}
-                    end={{x: 1, y: 1}}
-                    style={styles.balanceCard}
-                > */}
+            <Animatable.View animation='pulse' iterationCount={2} >
                 <ImageBackground source={require('../assets/cardBg.png')} style={styles.balanceCard} imageStyle={{borderRadius: 32}}>
                     <Text style={styles.currentBalance}>Balance</Text>
                     <Text style={styles.amount}>{balance} vc</Text>
@@ -250,13 +223,6 @@ export default function Home ({ route, navigation }) {
                     paddingTop: 24}}>Mine Transactions</Text>
 
             <View>
-                {/* <LinearGradient
-                    colors={['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8'].reverse()}
-                    start={{ x: 0, y: 0}}
-                    end={{x: 1, y: 1}}
-                    style={styles.balanceCard}
-                > */}
-                {/* <ImageBackground source={require('../assets/mineBg.png')} style={styles.miningCard} imageStyle={{borderRadius: 32}}> */}
                 <View style={styles.miningCard}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     
@@ -268,45 +234,18 @@ export default function Home ({ route, navigation }) {
                         <Text style={styles.buttonText}>Mine Transactions</Text>
                 </TouchableHighlight>
                 </View>
-                    
-                    
-
-                    
-                
-
-                    
-                    {/* <Text style={{...styles.currentBalance, marginTop:18}}>Mining Reward</Text> */}
-                    {/* <Text style={{...styles.amount, fontSize: 36}}>{balance} vc</Text> */}
-                {/* </ImageBackground> */}
-                {/* </LinearGradient> */}
             </View>
-            
-
-            
-
-            {/* <View style={styles.buttonsCard}>
-                <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => mineBlock(2)}>
-                        <Text style={styles.buttonText}>Mine</Text>
-                </TouchableHighlight>
-
-                {/* <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {() => setModalOpen(true)}>
-                        <Text style={styles.buttonText}>Pay </Text>
-                </TouchableHighlight> */}
-            {/* </View> */} 
-
 
             <Modal visible = {modalOpen} animationType='slide' onRequestClose = {() => setModalOpen(false)} style = {styles.modal} >
                  <TouchableWithoutFeedback onPress = {Keyboard.dismiss} style = {styles.modal}>
                      <View style={styles.modalContent}>
-                     <MaterialIcons 
-                            name = 'close'
-                            size = {24}
-                            onPress = {() => setModalOpen(false)}
-                            style = {{ ...styles.modalToggle, ...styles.modalClose}}
-                        />
-                     <TransactionForm addTransaction = {addTransaction} mobile={mobile} users={users}/>
-                         
-                        
+                        <MaterialIcons 
+                                name = 'close'
+                                size = {24}
+                                onPress = {() => setModalOpen(false)}
+                                style = {{ ...styles.modalToggle, ...styles.modalClose}}
+                            />
+                        <TransactionForm addTransaction = {addTransaction} mobile={mobile} users={users}/>
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
@@ -321,7 +260,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         paddingTop: 30,
-        backgroundColor: '#f3f3f3'
+        backgroundColor: '#e7e7e7'
     },  
     miningCard: {
         backgroundColor: '#fff',
@@ -379,10 +318,6 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginHorizontal: 10,
         padding: 18,
-        // paddingHorizontal: 20,
-        // paddingVertical: 40, 
-        // borderRadius: 20,
-        // resizeMode: 'cover'
     },
     currentBalance: {
         color: 'white',

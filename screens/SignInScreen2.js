@@ -227,6 +227,7 @@ export default function SignInScreen({ navigation }) {
                     >
                         <LinearGradient
                             colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6']}
+                            colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#889dfd', '#647ef9', '#3e5ef3']}
                             style={styles.signIn}
                         >
                             <Text style={[styles.textSign, {
@@ -257,7 +258,7 @@ export default function SignInScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#60A5FA'
+      backgroundColor: '#4968f5'
     },
     header: {
         flex: 1,

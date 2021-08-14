@@ -23,7 +23,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#152348"
+        "backgroundColor": "#152348",
+        "softwareKeyboardLayoutMode": "pan"
       },
       "package": "com.kedaroo.gamezone"
     },

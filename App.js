@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useReducer } from 'react';
-import { View, Text, ActivityIndicator, Button, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ActivityIndicator, Button, TouchableOpacity, Image, TouchableHighlight } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,7 +10,7 @@ import Tabs from './screens/AppScreen';
 import Home from './screens/home_copy';
 import TransactionHistoryScreen from './screens/transactionHistoryScreen';
 import UserScreen from './screens/userScreen';
-import TransactionForm from './screens/transactionForm2';
+import TransactionForm from './screens/transactionForm';
 import HomeStackScreen from './screens/homeStack';
 
 import RootStackScreen from './screens/RootStackScreen';
@@ -228,7 +228,8 @@ export default function App() {
   // }
 
   const CustomButton = ({children, onPress}) => (
-    <TouchableOpacity onPress={onPress}
+    <TouchableOpacity onPress={onPress} 
+      activeOpacity={0.8}
       style={{
         top:-20,
         justifyContent:'center',
@@ -236,6 +237,7 @@ export default function App() {
       }}
     >
       <View style={{
+        // alignSelf: 'center',
         width:50,
         height:50,
         borderRadius:35,
@@ -268,9 +270,10 @@ export default function App() {
                 tabBarInactiveTintColor: 'gray',
                 headerShown: false,
                 tabBarShowLabel: false,
+                tabBarHideOnKeyboard: true,
                 tabBarStyle: {
-                  position: 'absolute', bottom: 20, left: 20, right: 20, backgroundColor: '#fff',
-                  borderRadius: 15, height: 60, elevation: 0
+                   bottom: 20, left: 20, right: 20, backgroundColor: '#fff',
+                  borderRadius: 15, height: 60, elevation: 0, position: 'absolute'
                 }
               })}
             >
