@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useMemo, useReducer } from 'react';
-import { View, Text, ActivityIndicator, Button } from 'react-native';
+import { View, Text, ActivityIndicator, Button, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import socket from './service/socket';
+import Tabs from './screens/AppScreen';
 
 // screens
 import Home from './screens/home_copy';
 import TransactionHistoryScreen from './screens/transactionHistoryScreen';
 import UserScreen from './screens/userScreen';
+import TransactionForm from './screens/transactionForm2';
+import HomeStackScreen from './screens/homeStack';
 
 import RootStackScreen from './screens/RootStackScreen';
 
@@ -224,37 +227,73 @@ export default function App() {
   //   )
   // }
 
+  const CustomButton = ({children, onPress}) => (
+    <TouchableOpacity onPress={onPress}
+      style={{
+        top:-20,
+        justifyContent:'center',
+        alignItems:'center',
+      }}
+    >
+      <View style={{
+        width:50,
+        height:50,
+        borderRadius:35,
+        backgroundColor: '#5e7af8',
+        elevation: 6
+      }}>
+        {children}
+      </View>
+    </TouchableOpacity>
+  )
+
   return (
     <AuthContext.Provider value={authContext}>
         <NavigationContainer>
-          { loginState.userToken != null ? (
+         { loginState.userToken != null ? (
             <Tab.Navigator
               screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                   let iconName;
                   if (route.name === 'Home') {
-                    iconName = 'home-outline'
+                    iconName = 'home'
                   } else if (route.name === 'Recent Transactions') {
-                    iconName = 'ios-receipt-outline'
+                    iconName = 'ios-receipt'
                   } else if (route.name === 'My Profile') {
-                    iconName = 'person-outline' 
+                    iconName = 'person' 
                   }
                   return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: '#2563EB',
+                tabBarActiveTintColor: '#4363f4',
                 tabBarInactiveTintColor: 'gray',
-                headerShown: false
+                headerShown: false,
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                  position: 'absolute', bottom: 20, left: 20, right: 20, backgroundColor: '#fff',
+                  borderRadius: 15, height: 60, elevation: 0
+                }
               })}
             >
-            <Tab.Screen name="Home" component={Home} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            <Tab.Screen name="Home" component={HomeStackScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            <Tab.Screen options={{
+              tabBarIcon: ({focused}) => (
+                <Image source={require('./assets/plus.png')} resizeMode="contain" style={{
+                  width:32,
+                  height: 32, 
+                  tintColor: 'white',
+                }}/>
+              ),
+              tabBarButton: (props) => (
+                <CustomButton {...props}/>
+              )
+            }} name="Transaction Form" component={TransactionForm} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
             <Tab.Screen name="Recent Transactions" component={TransactionHistoryScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
-            <Tab.Screen name="My Profile" component={UserScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            {/* <Tab.Screen name="My Profile" component={UserScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} /> */}
           </Tab.Navigator> 
           )
           :
           <RootStackScreen />
-        }
-
+        } 
       </NavigationContainer>
     </AuthContext.Provider>
   )

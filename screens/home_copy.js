@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import startUp from '../database/db_func';
 import * as Animatable from 'react-native-animatable';
+import { TouchableOpacity } from 'react-native';
 
 
 export default function Home ({ route, navigation }) {
@@ -216,15 +217,19 @@ export default function Home ({ route, navigation }) {
                 </View>
 
                 <View>
-                    <Image 
-                        source={{uri: image}} 
-                        style={styles.profilePic}
-                    ></Image>
+                    <TouchableOpacity
+                        onPress={()=>{navigation.navigate('User Screen')}}
+                    >
+                        <Image 
+                            source={{uri: image}} 
+                            style={styles.profilePic}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
 
             
-            <Animatable.View animation='pulse' iterationCount={4} >
+            <Animatable.View animation='pulse' iterationCount={3} >
                 {/* <LinearGradient
                     colors={['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8'].reverse()}
                     start={{ x: 0, y: 0}}
