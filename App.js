@@ -13,6 +13,8 @@ import UserScreen from './screens/userScreen';
 import TransactionForm from './screens/transactionForm';
 import HomeStackScreen from './screens/homeStack';
 import MakePaymentScreen from './screens/makePaymentScreen';
+// import SplashScreen from './screens/SplashScreen';
+import SignInScreen from './screens/SignInScreen2';
 
 import RootStackScreen from './screens/RootStackScreen';
 
@@ -32,13 +34,15 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
 
-  const [name, setName] = useState(null);
+  // const [name, setName] = useState(null);
 
   const initialLoginState = {
     isLoading: true,
+    // name: null,
     userName: null,
     userToken: null,
-    mobile: null
+    // mobile: null,
+    isNewUser: false,
   }
 
   const loginReducer = (prevState, action) => {
@@ -47,33 +51,41 @@ export default function App() {
         return {
           ...prevState,
           userToken: action.token,
-          mobile: action.mobile,
+          // mobile: action.mobile,
           isLoading: false
         };
       case 'LOGIN':
         return {
           ...prevState,
-          userName: action.id,
+          // userName: action.id,
           userToken: action.token,
-          mobile: action.mobile,
+          // mobile: action.mobile,
           isLoading: false,
+          // isNewUser: false
         };
       case 'LOGOUT':
         return {
           ...prevState,
-          userName: null,
+          // userName: null,
           userToken: null,
-          mobile: null,
+          // mobile: null,
           isLoading: false
         };
       case 'REGISTER':
-        
         return {
           ...prevState,
-          userName: action.id,
-          userToken: action.token,
+          // userName: action.id,
+          // userToken: action.token,
+          isNewUser: true,
           isLoading: false
-          
+        };
+      case 'HOMESTACK':
+        return {
+          ...prevState,
+          // userName: action.id,
+          // userToken: action.token,
+          isNewUser: false,
+          isLoading: false,
         };
     }
   }
@@ -97,18 +109,68 @@ export default function App() {
     //   }
     //   dispatch({type: 'LOGIN', id: userName, token: userToken});
     // },
-    signIn: async (userName, userToken, mobile) => {
-      socket.emit("user_registration", [userToken, mobile])
+    signIn: async (userToken) => {
+      const { sub } = userToken
+      const { picture } = userToken
       let token;
       token = null;
       try {
         token = JSON.stringify(userToken)
+        // await AsyncStorage.setItem('name', name)
+        // await AsyncStorage.setItem('picture', picture)
         await AsyncStorage.setItem('userToken', token)
-        await AsyncStorage.setItem('mobile', mobile)
       } catch(e) {
         console.log(e)
       }
-      dispatch({type: 'LOGIN', id: userName, token: token, mobile: mobile});
+      socket.emit("user_registration", userToken)
+      socket.once("user login", async args => {
+        console.log('HI KEDAR LOOK HERE!!!!!!')
+        // console.log('NEW USER STATE', args, args.isNewUser)
+        if (!args.isNewUser) {
+          // let token;
+          // token = null;
+          // try {
+          //   token = JSON.stringify(userToken)
+          //   // await AsyncStorage.setItem('name', name)
+          //   await AsyncStorage.setItem('picture', picture)
+          //   await AsyncStorage.setItem('userToken', token)
+          // } catch(e) {
+          //   console.log(e)
+          // }
+          socket.emit("fetch username", sub)
+          
+          socket.once("get username", args => {
+            
+            console.log('This is inside get username')
+            // await AsyncStorage.setItem('username', args)
+            console.log('SEE WHATYOU SEE******************************')
+            console.log('TYPE OF ::::', typeof args)
+            // dispatch({type: 'LOGIN', id: args, token: token, mobile: mobile});
+            dispatch({type: 'LOGIN', token: token});
+            console.log(args)
+          })
+          console.log('THIS IS THE USERNAME:::::::::::::::::::::::::::::::::::', username)
+          // dispatch({type: 'LOGIN', id: username, token: token, mobile: mobile});
+          // dispatch({type: 'LOGIN', id: name, token: token, mobile: mobile});
+        } else {
+          console.log('This is in the else PART, YOU ARE A NEW USER')
+          dispatch({ type: 'REGISTER' })
+        }
+      })
+      // if (NewUser) {
+      //   let token;
+      //   token = null;
+      //   try {
+      //     token = JSON.stringify(userToken)
+      //     await AsyncStorage.setItem('userToken', token)
+      //     await AsyncStorage.setItem('mobile', mobile)
+      //   } catch(e) {
+      //     console.log(e)
+      //   }
+      //   dispatch({type: 'LOGIN', id: userName, token: token, mobile: mobile});
+      // } else {
+      //   dispatch({ type: 'REGISTER' })
+      // }
     },
     signOut: async () => {
       // setUserToken(null)
@@ -132,9 +194,14 @@ export default function App() {
       }
       dispatch({type: 'LOGOUT' })
     },
-    signUp: () => {
-      setUserToken('krb')
-      setIsLoading(false)
+    signUp: async (username) => {
+      console.log('This is inside signUp')
+      const token = await AsyncStorage.getItem('userToken')
+      socket.emit("add username", [username, JSON.parse(token).sub])
+      dispatch({ type: 'HOMESTACK' })
+      // dispatch({type: 'LOGIN', id: loginState.userName, token: loginState.userToken, mobile: 8149891630});
+      // setUserToken('krb')
+      // setIsLoading(false)
     }
   }), [])
 
@@ -250,6 +317,16 @@ export default function App() {
     </TouchableOpacity>
   )
 
+  if (loginState.isNewUser) {
+    return (
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          <SignInScreen />
+        </NavigationContainer>
+      </AuthContext.Provider>
+    )
+  }
+
   return (
     <AuthContext.Provider value={authContext}>
         <NavigationContainer>
@@ -279,7 +356,7 @@ export default function App() {
                 }
               })}
             >
-            <Tab.Screen name="Home" component={HomeStackScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            <Tab.Screen name="Home" component={HomeStackScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile, userName: loginState.userName}} />
             <Tab.Screen options={{
               tabBarIcon: ({focused}) => (
                 <Image source={require('./assets/plus.png')} resizeMode="contain" style={{
@@ -291,7 +368,7 @@ export default function App() {
               tabBarButton: (props) => (
                 <CustomButton {...props}/>
               )
-            }} name="Transaction Form" component={MakePaymentScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            }} name="Transaction Form" component={MakePaymentScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile, userName: loginState.userName}} />
             <Tab.Screen name="Recent Transactions" component={TransactionHistoryScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
             {/* <Tab.Screen name="My Profile" component={UserScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} /> */}
           </Tab.Navigator> 

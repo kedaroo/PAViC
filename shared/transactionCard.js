@@ -6,16 +6,16 @@ export default function TransactionCard(props) {
     var users = props.users;
     console.log('THIS IS INSIDE TRANSACTION CARD: ', users)
 
-    if (props.children.from_add == props.mobile) {
-        console.log('NAME:::::::::::::::::::::', users[props.children.to_add])
+    if (props.children.from_add == props.username) {
+        // console.log('NAME:::::::::::::::::::::', users[props.children.to_add])
         // var placeholder = props.children.to_add
-        var placeholder = users[props.children.to_add]
+        var placeholder = props.children.to_add
         var logo = require('../assets/outgoing.png')
         var bg = '#FEE2E2'
     } else {
-        console.log('NAME:::::::::::::::::::::', users[props.children.from_add])
+        // console.log('NAME:::::::::::::::::::::', users[props.children.from_add])
         // var placeholder = props.children.from_add
-        var placeholder = users[props.children.from_add]
+        var placeholder = props.children.from_add
         var logo = require('../assets/incoming.png')
         var bg = '#D1FAE5'
     }
@@ -93,9 +93,9 @@ export default function TransactionCard(props) {
                 <View>
                     <Text style={styles.userName}>{placeholder}</Text>
                 </View>
-                <View>
+                {/* <View>
                     <Text style={styles.timestamp}>13:56 6 June, 2020</Text>
-                </View>
+                </View> */}
             </View>
 
             <View style={styles.amountView}>

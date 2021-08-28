@@ -5,7 +5,13 @@ import TransactionCard from '../shared/transactionCard';
 
 export default function TransactionHistoryScreen ({ route }) {  
 
-    const mobile = route.params.mobile
+    // const mobile = route.params.mobile
+
+    const [userName, setUserName] = useState('')
+    socket.emit("fetch username", sub)    
+    socket.once("get username", args => {
+        setUserName(args)
+    })
 
     const [transactions, setTransactions] = useState();
     const [refreshing, setRefreshing] = useState(false);
@@ -38,7 +44,7 @@ export default function TransactionHistoryScreen ({ route }) {
             console.log('TRYING TO LOAD TRANSACTION FOR HistoryScreen...')
             tx.executeSql(
                 'SELECT * FROM transactions where from_add = ? or to_add = ?',
-                [mobile, mobile], 
+                [username, username], 
                 (_tx, {rows: {_array} }) => {
                     console.log('LOADED TRANSACTIONS:')
                     setTransactions(_array.reverse())
@@ -55,7 +61,7 @@ export default function TransactionHistoryScreen ({ route }) {
             console.log('TRYING TO LOAD TRANSACTION FOR HistoryScreen...')
             tx.executeSql(
                 'SELECT * FROM transactions where from_add = ? or to_add = ?',
-                [mobile, mobile], 
+                [username, username], 
                 (_tx, {rows: {_array} }) => {
                     console.log('LOADED TRANSACTIONS:')
                     setTransactions(_array.reverse())
@@ -92,7 +98,7 @@ export default function TransactionHistoryScreen ({ route }) {
                 <FlatList 
                     data={transactions}
                     renderItem={({item}) => (
-                        <TransactionCard mobile={mobile} users={users}>{item}</TransactionCard> 
+                        <TransactionCard username={username} >{item}</TransactionCard> 
                     )}
                     onRefresh={refreshTransactions}
                     refreshing={refreshing}

@@ -69,8 +69,9 @@ export default function SplashScreen({ navigation }) {
     //     signIn(username, password);
     // }
 
-    const loginHandle = (username, token) => {
-        signIn(username, token);
+    const loginHandle = (token) => {
+        // console.log('Inisde login handle', token)
+        signIn(token);
     }
 
     const [request, result, promptAsync] = AuthSession.useAuthRequest(
@@ -104,9 +105,9 @@ export default function SplashScreen({ navigation }) {
             const jwtToken = result.params.id_token;
             const decoded = jwtDecode(jwtToken);
             console.log('HELOOOOOOOOOO::THIS IS THE RESULT', decoded)
-            const { aud } = decoded;
-            const { given_name } = decoded;
-            loginHandle(given_name, decoded)
+            // const { picture } = decoded;
+            // const { name } = decoded;
+            loginHandle(decoded)
             // dispatch({type: 'RETRIEVE_TOKEN', token: aud})
             // console.log
             // setName(name);
@@ -146,11 +147,11 @@ export default function SplashScreen({ navigation }) {
                 <Text style={styles.title}>Stay connected with everyone!</Text>
                 <Text style={styles.text}>Sign in with account</Text>
                 <View style={styles.button}>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-                    {/* <TouchableOpacity onPress={() => promptAsync({ useProxy })}> */}
+                    {/* <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}> */}
+                    <TouchableOpacity onPress={() => promptAsync({ useProxy })}>
                     {/* <TouchableOpacity onPress={}> */}
                         <LinearGradient
-                            colors={['pink', 'violet']}
+                            colors={['#93C5FD', '#2563EB']}
                             style={styles.signIn}
                         >
                             <Text style={styles.textSign}>Get Started</Text>
@@ -169,12 +170,12 @@ export default function SplashScreen({ navigation }) {
 };
 
 const {height} = Dimensions.get("screen");
-const height_logo = height * 0.28;
+const height_logo = height * 0.6;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    backgroundColor: 'pink'
+    backgroundColor: '#1E40AF'
   },
   header: {
       flex: 2,

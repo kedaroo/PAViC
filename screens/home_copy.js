@@ -19,9 +19,20 @@ import getReward from '../database/getReward';
 export default function Home ({ route, navigation }) {
 
     const [modalOpen, setModalOpen] = useState(false)
-    const user = JSON.parse(route.params.token).name
+
+    // const user = JSON.parse(route.params.token).name
+
     const image = JSON.parse(route.params.token).picture
-    const mobile = route.params.mobile
+    const sub = JSON.parse(route.params.token).sub
+
+    // const mobile = route.params.mobile
+    // const userName = route.params.userName
+
+    const [userName, setUserName] = useState('')
+    socket.emit("fetch username", sub)    
+    socket.once("get username", args => {
+        setUserName(args)
+    })
     
     const [balance, setBalance] = useState('...')
     const [reward, setReward] = useState('...')
@@ -32,7 +43,6 @@ export default function Home ({ route, navigation }) {
     const { signOut } = useContext(AuthContext)
 
     const mineButtonHandler = () => {
-        // mineBlock(5)
         if (mineButtonText == 'Fetch Transactions') {
             socket.emit("fetch pending transactions")
             socket.once("pending transactions", Transactions => {
@@ -43,12 +53,11 @@ export default function Home ({ route, navigation }) {
                 }
             })
         } else {
-            setMineButtonText('Mining...')
             ToastAndroid.show('Mining started...', ToastAndroid.SHORT)
-            mineBlock(4, mobile)
+            mineBlock(4, userName)
             setMineButtonText('Fetch Transactions')
             setPendingTransactions(0)
-            Alert.alert('Mining completed!', 'Reward added successfully to your balance')
+            Alert.alert('Mining completed!', 'Reward successfully added to your balance')
         }
     }
     
@@ -73,7 +82,7 @@ export default function Home ({ route, navigation }) {
         db.transaction((tx) => {
             console.log('TRYING TO LOAD USERS FOR HistoryScreen...')
             tx.executeSql(
-                'SELECT name, mobile FROM users',
+                'SELECT username FROM users',
                 [], 
                 (_tx, {rows: {_array} }) => {
                     console.log('LOADED USERS:')
@@ -92,14 +101,13 @@ export default function Home ({ route, navigation }) {
     useEffect(() => {
 
         console.log('ADD NEW USER LISTENER SUCCESS================================================================')
-
         socket.on("add new user", args => {
             console.log('I booooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmm')
             console.log('This is inside add new user event listner')
             // console.log('RECEIVED USER:', args)
             db.transaction((tx) => {
                 tx.executeSql(
-                    'INSERT INTO users (name, user_id, picture, mobile) VALUES (?, ?, ?, ?)',
+                    'INSERT INTO users (user_id, picture, username) VALUES (?, ?, ?)',
                     args,
                     (_tx, {rows }) => {
                         // console.log('INSERTED NEW USER SUCCESSFULLY::', rows)
@@ -144,8 +152,8 @@ export default function Home ({ route, navigation }) {
                         (tx, err) => console.log(err)
                     )
                 }
-                fetchUserBalance2(mobile)
-                fetchReward(mobile)
+                fetchUserBalance2(username)
+                fetchReward(username)
             }, () => console.log('TRANSACTIONS FETCH AND INSERT error'), () => console.log('TRANSACTIONS FETCH AND INSERT SUCCESSFULL'))
         
             console.log('Deleting pending_transactions..')
@@ -188,10 +196,10 @@ export default function Home ({ route, navigation }) {
 
         })
 
-        fetchUserBalance(mobile)
-        fetchReward(mobile)
+        fetchUserBalance(username)
+        fetchReward(username)
         loadUsers()
-        // console.log(users)
+        console.log(users)
 
     }, []);
     
@@ -216,7 +224,7 @@ export default function Home ({ route, navigation }) {
             <View style={styles.profileCard}>
                 <View>
                     <Text style={styles.welcome}>Welcome</Text>
-                    <Text style={styles.userName}>{user}</Text>
+                    <Text style={styles.userName}>{userName}</Text>
                 </View>
 
                 <View>

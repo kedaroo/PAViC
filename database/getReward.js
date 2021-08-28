@@ -1,12 +1,12 @@
 import db from '../database/database';
 
-function from(mobile) {
+function from(username) {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
                 // 'SELECT SUM(amount) FROM transactions where from_add = 0',
-                'select sum(amount) from transactions where from_add = 0 and to_add = ?',
-                [mobile], 
+                'select sum(amount) from transactions where from_add = "0" and to_add = ?',
+                [username], 
                 (_tx, {rows: {_array} }) => {
                     console.log('THIS IS THE FROM IN fetch reward')
                     // console.log(_array[0]['SUM(amount)'])
@@ -26,9 +26,9 @@ function from(mobile) {
     })
 }
 
-const getReward = (mobile) => {
+const getReward = (username) => {
     return new Promise( async function(resolve, reject) {
-        var reward = await from(mobile)
+        var reward = await from(username)
         // console.log('THIS IS INSIDE getBalance. THIS IS BALANCE BELOW')
         console.log('7.3 REWARD FETCHED')
         console.log(reward)

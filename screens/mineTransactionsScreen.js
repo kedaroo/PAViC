@@ -6,7 +6,7 @@ import { SHA256 } from 'crypto-js';
 
 
 // fetching pending transactions
-function fetchPendingTransactions(mobile) {
+function fetchPendingTransactions(username) {
     return new Promise(function(resolve, reject) {
         socket.emit("fetch pending transactions", null);
         socket.once("pending transactions", Transactions => {
@@ -23,7 +23,7 @@ function fetchPendingTransactions(mobile) {
                 }
                 tx.executeSql(
                     'INSERT INTO pending_transactions (from_add, to_add, amount) VALUES (?, ?, ?)',
-                    [0, mobile, 500], 
+                    ['Reward', username, 100], 
                     (_tx, {rows: {_array} }) => {
                         console.log('Insert MINING REWARD into pending_transactions SUCCESFULL')
                     }, 
@@ -54,7 +54,7 @@ function fetchPrevHash() {
     })
 }
 
-const mineBlock = async (difficulty, mobile) => {
+const mineBlock = async (difficulty, username) => {
 
     console.log('============================================================')
     console.log('mineBlock FUNCTION INVOKED')
@@ -71,7 +71,7 @@ const mineBlock = async (difficulty, mobile) => {
 
     console.log('FETCHING PENDING TRANSACTIONS')
 
-    var pending_transactions = await fetchPendingTransactions(mobile);
+    var pending_transactions = await fetchPendingTransactions(username);
 
     if (pending_transactions.length == 0) {
         Alert.alert('Mining Error', 'There are no pending Transactions to mine')
@@ -93,7 +93,7 @@ const mineBlock = async (difficulty, mobile) => {
 
     console.log('MINING PROCESS FINISHED')
 
-    socket.emit("block mined", [prevHash, hashString, counter, [0, parseInt(mobile), 500]]);
+    socket.emit("block mined", [prevHash, hashString, counter, ['0', username, 100]]);
 
     socket.connect()
 }

@@ -7,8 +7,7 @@ import {
     TouchableOpacity,
     Dimensions,
     Platform,
-    TextInput,
-    Alert
+    TextInput
 } from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
@@ -18,13 +17,11 @@ import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-// import socket from '../service/socket';
 
 import { AuthContext } from '../components/context';
 
 import * as AuthSession from 'expo-auth-session';
 import jwtDecode from 'jwt-decode';
-import socket from '../service/socket';
 
 const auth0ClientId = "icHaPvJhCgZFFdIHov7myIO6EYeQjYxc";
 const authorizationEndpoint = "https://dev-6deskpi9.us.auth0.com/authorize";
@@ -43,7 +40,7 @@ export default function SignInScreen({ navigation }) {
         secureTextEntry: true
     })
 
-    const { signUp } = useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
 
     const [request, result, promptAsync] = AuthSession.useAuthRequest(
         {
@@ -103,7 +100,7 @@ export default function SignInScreen({ navigation }) {
         if (val.length == 10) {
             setData({
                 ...data,
-                username: val,
+                mobile: val,
                 check_textInputChange: true,
                 disability: false
             })
@@ -131,53 +128,35 @@ export default function SignInScreen({ navigation }) {
         })
     }
 
-    const loginHandle = () => {
-        signUp(data.username);
-    }
-
-    const [checkButton, setCheckButton] = useState('Continue')
-    const userNameHandler = () => {
-        var usernameBool;
-        socket.emit("check user name", data.username)
-        socket.once("set username", args => {
-            console.log(args)
-            if (args) {
-                // Alert.alert('', 'Username available')
-                loginHandle()
-            } else {
-                Alert.alert('Username already exists!', 'Please try again with another username')
-            }
-        })
-        
-        // setCheckButton('Hello')
+    const loginHandle = (username, password) => {
+        signIn(username, password, data.mobile);
     }
 
     return (
         <View style={styles.container}>
             <StatusBar style='auto'/>
             <View style={styles.header}>
-                <Text style={styles.text_header} >Welcome New User!</Text>
+                <Text style={styles.text_header} >Welcome!</Text>
             </View>
 
             <Animatable.View 
                 animation='fadeInUpBig'
                 style={styles.footer}
             >
-                <Text style={styles.text_footer} >Set a new user name.</Text>
-                <Text style={styles.text_footer} >This will be used as your address for making payments.</Text>
+                <Text style={styles.text_footer} >Phone</Text>
                 <View style={styles.action}>
                     <FontAwesome 
-                        name="user"
+                        name="phone"
                         color={'black'}
                         size={28}
                     />
                     <TextInput 
-                        placeholder='Set new user name'
+                        placeholder='Enter you mobile number'
                         style={styles.textInput}
                         autoCapitalize='none'
                         onChangeText={(val) => textInputChange(val)}
-                        // keyboardType='phone-pad'
-                        maxLength={12}
+                        keyboardType='phone-pad'
+                        maxLength={10}
                     />
                     {data.check_textInputChange ?  
 
@@ -243,7 +222,7 @@ export default function SignInScreen({ navigation }) {
                 <View style={styles.Button}>
                     <TouchableOpacity
                         style={styles.signIn}
-                        onPress={() => userNameHandler()}
+                        onPress={() => promptAsync({ useProxy })}
                         disabled={data.disability}
                     >
                         <LinearGradient
@@ -253,7 +232,7 @@ export default function SignInScreen({ navigation }) {
                         >
                             <Text style={[styles.textSign, {
                                 color: 'white'
-                            }]}>{checkButton}</Text>
+                            }]}>Continue</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                     
@@ -298,12 +277,11 @@ const styles = StyleSheet.create({
     text_header: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 32
+        fontSize: 38
     },
     text_footer: {
         color: '#05375a',
-        fontSize: 18,
-        textAlign: 'justify'
+        fontSize: 24
     },
     action: {
         flexDirection: 'row',

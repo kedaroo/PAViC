@@ -9,12 +9,12 @@ import db from '../database/database';
 
 const reviewSchema = yup.object().shape({
     from: yup.string()
-      .required()
-      .min(4),
+      .required(),
+    //   .min(4),
     to: yup.string()
-      .required()
-      .min(10)
-      .max(10),
+      .required(),
+    //   .min(10)
+    //   .max(10),
     amount: yup.string()
       .required(),
   });
@@ -25,7 +25,7 @@ const reviewSchema = yup.object().shape({
     </View>
   );
 
-export default function TransactionForm({ addTransaction, mobile}) {
+export default function TransactionForm({ addTransaction, username}) {
 
     const loadUsers = () => {
         db.transaction((tx) => {
@@ -107,7 +107,7 @@ export default function TransactionForm({ addTransaction, mobile}) {
         <View style = {styles.container}>
             
             <Formik
-                initialValues = {{ from: mobile, to: 0, amount: 0 }}
+                initialValues = {{ from: username, to: '', amount: 0 }}
                 validationSchema = {reviewSchema}
                 onSubmit = {(values, actions) => {
                     console.log('IM INSIDE SUBMIT HANDLER')
@@ -170,7 +170,7 @@ export default function TransactionForm({ addTransaction, mobile}) {
                                 onChangeText = {props.handleChange('to')}
                                 value = {props.values.to}
                                 onBlur = {props.handleBlur('to')}
-                                keyboardType = 'number-pad'
+                                // keyboardType = 'number-pad' mobile
                         
                             />
                             <Text style = {globalStyles.errorText}>{props.touched.to && props.errors.to}</Text>
@@ -180,7 +180,7 @@ export default function TransactionForm({ addTransaction, mobile}) {
                                 placeholder = 'Amount'
                                 onChangeText = {props.handleChange('amount')}
                                 value = {props.values.amount}
-                                keyboardType = 'number-pad'
+                                // keyboardType = 'number-pad'
                                 onBlur = {props.handleBlur('amount')}
                             />
                             <Text style = {globalStyles.errorText}>{props.touched.amount && props.errors.amount}</Text>

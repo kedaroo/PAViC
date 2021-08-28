@@ -8,7 +8,7 @@ function createUsersTable() {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
-              'CREATE TABLE if NOT EXISTS users (id integer primary key AUTOINCREMENT, name text, user_id text unique, picture text, mobile integer)', 
+              'CREATE TABLE if NOT EXISTS users (id integer primary key AUTOINCREMENT, user_id text unique, picture text, username text unique)', 
                 [], 
                 (_tx, {rows}) => {
                     // console.log('CREATE TABLE users SUCCESS!::', rows)
@@ -42,8 +42,8 @@ function updateUsers() {
                 for (let user of users.data) {
                     db.transaction((tx) => {
                         tx.executeSql(
-                            "INSERT INTO users (name, user_id, picture, mobile) VALUES (?, ?, ?, ?)",
-                            [user.name, user.user_id, user.picture, user.mobile],
+                            "INSERT INTO users (user_id, picture, username) VALUES (?, ?, ?)",
+                            [user.user_id, user.picture, user.username],
                             (_tx, {rows: {_array}}) => console.log(_array)
                         )
                     })
@@ -113,7 +113,7 @@ function createTransactionsTable() {
         db.transaction((tx) => {
             tx.executeSql(
                 // 'CREATE TABLE if NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, b_id INTEGER, from_add text, to_add text, amount integer)', 
-                'CREATE TABLE if NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, b_id INTEGER, from_add integer, to_add integer, amount integer)', 
+                'CREATE TABLE if NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, b_id INTEGER, from_add text, to_add text, amount integer)', 
                   [], 
                   (_tx, {rows: {_array}}) => {
                     //   console.log(_array)
@@ -227,7 +227,7 @@ function createPendingTransactionsTable() {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
-                'CREATE TABLE if NOT EXISTS pending_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, from_add integer, to_add integer, amount integer)', 
+                'CREATE TABLE if NOT EXISTS pending_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, from_add text, to_add text, amount integer)', 
                   [], 
                   (_tx, {rows: {_array}}) => {
                     // console.log('PENDING TRANSACTIONS TABLE CREATE SUCESS::', _array)

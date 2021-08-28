@@ -1,11 +1,11 @@
 import db from '../database/database';
 
-function from(name) {
+function from(username) {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
                 'SELECT SUM(amount) FROM transactions where from_add = ?',
-                [name], 
+                [username], 
                 (_tx, {rows: {_array} }) => {
                     // console.log('THIS IS THE FROM')
                     // console.log(_array[0]['SUM(amount)'])
@@ -24,12 +24,12 @@ function from(name) {
     })
 }
 
-function to(name) {
+function to(username) {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
                 'SELECT SUM(amount) FROM transactions where to_add = ?',
-                [name], 
+                [username], 
                 (_tx, {rows: {_array} }) => {
                     // console.log('THIS IS THE TO')
                     // console.log(_array[0]['SUM(amount)'])
@@ -48,10 +48,10 @@ function to(name) {
     })
 }
 
-const getBalance = (name) => {
+const getBalance = (username) => {
     return new Promise( async function(resolve, reject) {
-        var from_amt = await from(name)
-        var to_amt = await to(name)
+        var from_amt = await from(username)
+        var to_amt = await to(username)
         var balance = to_amt - from_amt
         // console.log('THIS IS INSIDE getBalance. THIS IS BALANCE BELOW')
         console.log('7.3 BALANCE FETCHED')

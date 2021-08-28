@@ -7,7 +7,13 @@ import getBalance from '../database/getBalance';
 
 export default function MakePaymentScreen ({route, navigation}) {
 
-    const mobile = route.params.mobile
+    // const mobile = route.params.mobile
+
+    const [userName, setUserName] = useState('')
+    socket.emit("fetch username", sub)    
+    socket.once("get username", args => {
+        setUserName(args)
+    })
 
     const addTransaction = async (transaction) => {
         var userBalance = await getBalance(transaction.from)
@@ -26,7 +32,7 @@ export default function MakePaymentScreen ({route, navigation}) {
 
     return (
         <View style={{flex:1}}>
-            <TransactionForm addTransaction = {addTransaction} mobile={mobile}/>
+            <TransactionForm addTransaction = {addTransaction} username={username}/>
         </View>
     )
 }
