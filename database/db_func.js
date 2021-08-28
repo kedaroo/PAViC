@@ -230,7 +230,7 @@ function createPendingTransactionsTable() {
                 'CREATE TABLE if NOT EXISTS pending_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, from_add integer, to_add integer, amount integer)', 
                   [], 
                   (_tx, {rows: {_array}}) => {
-                    console.log('PENDING TRANSACTIONS TABLE CREATE SUCESS::', _array)
+                    // console.log('PENDING TRANSACTIONS TABLE CREATE SUCESS::', _array)
                     resolve(_array)
                   }, 
                   () => console.log('CREATE TABLE pending_transactions FAILED!')

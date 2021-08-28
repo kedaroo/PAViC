@@ -103,7 +103,7 @@ export default function SplashScreen({ navigation }) {
             // Retrieve the JWT token and decode it
             const jwtToken = result.params.id_token;
             const decoded = jwtDecode(jwtToken);
-            console.log('HELOOOOOOOOOO::', decoded)
+            console.log('HELOOOOOOOOOO::THIS IS THE RESULT', decoded)
             const { aud } = decoded;
             const { given_name } = decoded;
             loginHandle(given_name, decoded)

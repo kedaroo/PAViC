@@ -29,7 +29,7 @@ export default function TransactionHistoryScreen ({ route }) {
                 () => console.log('Fetching USERS FOR HISTORY FAILED!')
             )
         }, () => console.log('Fetching USERS FOR HISTORY error'), () => console.log('Fetching USERS FOR HISTORY SUCCESSFULL'));
-      }
+    }
 
 
     const refreshTransactions = () => {

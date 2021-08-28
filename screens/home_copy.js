@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Modal, TouchableWithoutFeedback, Keyboard, Alert, Text, Image,
-    TouchableHighlight, ImageBackground } from 'react-native';
+    TouchableHighlight, ImageBackground, ToastAndroid } from 'react-native';
 import { SHA256 } from 'crypto-js';
 import db from '../database/database';
 import socket from '../service/socket';
@@ -9,12 +9,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import getBalance from '../database/getBalance';
 import mineBlock from './mineTransactionsScreen';
 import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
 import startUp from '../database/db_func';
 import * as Animatable from 'react-native-animatable';
 import { TouchableOpacity } from 'react-native';
 import { Tooltip } from 'react-native-elements';
 import { AuthContext } from '../components/context';
+import getReward from '../database/getReward';
 
 export default function Home ({ route, navigation }) {
 
@@ -24,6 +24,7 @@ export default function Home ({ route, navigation }) {
     const mobile = route.params.mobile
     
     const [balance, setBalance] = useState('...')
+    const [reward, setReward] = useState('...')
     const [pendingTransactions, setPendingTransactions] = useState(0)
     const [users, setUsers] = useState()
     const [mineButtonText, setMineButtonText] = useState('Fetch Transactions')
@@ -32,11 +33,6 @@ export default function Home ({ route, navigation }) {
 
     const mineButtonHandler = () => {
         // mineBlock(5)
-        // socket.emit("fetch pending transactions")
-        //     socket.once("pending transactions", Transactions => {
-        //         console.log(Transactions)
-        //         setPendingTransactions(Transactions.data.length)
-        //     })
         if (mineButtonText == 'Fetch Transactions') {
             socket.emit("fetch pending transactions")
             socket.once("pending transactions", Transactions => {
@@ -48,9 +44,11 @@ export default function Home ({ route, navigation }) {
             })
         } else {
             setMineButtonText('Mining...')
+            ToastAndroid.show('Mining started...', ToastAndroid.SHORT)
             mineBlock(4, mobile)
             setMineButtonText('Fetch Transactions')
             setPendingTransactions(0)
+            Alert.alert('Mining completed!', 'Reward added successfully to your balance')
         }
     }
     
@@ -64,6 +62,11 @@ export default function Home ({ route, navigation }) {
         var x = await getBalance(user)
         console.log('THIS is fetched user BALANCE: ', x)
         setBalance(x)
+    }
+
+    const fetchReward = async (mobile) => {
+        var x = await getReward(mobile)
+        setReward(x)
     }
 
     const loadUsers = () => {
@@ -142,6 +145,7 @@ export default function Home ({ route, navigation }) {
                     )
                 }
                 fetchUserBalance2(mobile)
+                fetchReward(mobile)
             }, () => console.log('TRANSACTIONS FETCH AND INSERT error'), () => console.log('TRANSACTIONS FETCH AND INSERT SUCCESSFULL'))
         
             console.log('Deleting pending_transactions..')
@@ -160,30 +164,32 @@ export default function Home ({ route, navigation }) {
 
 
 
-            db.transaction((tx) => {
-                tx.executeSql(
-                    'select * from blocks',
-                    [], 
-                    (_tx, {rows }) => {
-                        // console.log('THE BLOCKS::', rows)
-                    }, 
-                    () => console.log('NEW BLOCK INSERT FAILED')
-                )
-            }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
+            // db.transaction((tx) => {
+            //     tx.executeSql(
+            //         'select * from blocks',
+            //         [], 
+            //         (_tx, {rows }) => {
+            //             // console.log('THE BLOCKS::', rows)
+            //         }, 
+            //         () => console.log('NEW BLOCK INSERT FAILED')
+            //     )
+            // }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
 
-            db.transaction((tx) => {
-                tx.executeSql(
-                    'select * from transactions',
-                    [], 
-                    (_tx, {rows }) => {
-                        // console.log('THE BLOCKS::', rows)
-                    }, 
-                    () => console.log('NEW BLOCK INSERT FAILED')
-                )
-            }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
+            // db.transaction((tx) => {
+            //     tx.executeSql(
+            //         'select * from transactions',
+            //         [], 
+            //         (_tx, {rows }) => {
+            //             // console.log('THE BLOCKS::', rows)
+            //         }, 
+            //         () => console.log('NEW BLOCK INSERT FAILED')
+            //     )
+            // }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
+
         })
 
         fetchUserBalance(mobile)
+        fetchReward(mobile)
         loadUsers()
         // console.log(users)
 
@@ -193,7 +199,7 @@ export default function Home ({ route, navigation }) {
         var userBalance = await getBalance(transaction.from)
         if (parseInt(transaction.amount) > userBalance) {
             Alert.alert('Transaction Error', 'You have insufficient balance')
-            setModalOpen(false)
+            // setModalOpen(false)
             return
         }
         socket.once("transaction acknowledgement", data => {
@@ -201,7 +207,7 @@ export default function Home ({ route, navigation }) {
         })
         console.log('TRANSACTION emitted: ', transaction)
         socket.emit("transaction", transaction);
-        setModalOpen(false)
+        // setModalOpen(false)
     }
 
     return (
@@ -236,12 +242,12 @@ export default function Home ({ route, navigation }) {
             </View>
 
             
-            <Animatable.View animation='pulse' iterationCount={2} >
+            <Animatable.View animation='pulse' iterationCount={3} >
                 <ImageBackground source={require('../assets/cardBg.png')} style={styles.balanceCard} imageStyle={{borderRadius: 32}}>
                     <Text style={styles.currentBalance}>Balance</Text>
                     <Text style={styles.amount}>{balance} vc</Text>
                     <Text style={{...styles.currentBalance, marginTop:14}}>Mining Reward</Text>
-                    <Text style={{...styles.amount, fontSize: 36}}>{balance} vc</Text>
+                    <Text style={{...styles.amount, fontSize: 36}}>{reward} vc</Text>
                 </ImageBackground>
                 {/* </LinearGradient> */}
             </Animatable.View>
