@@ -29,10 +29,12 @@ export default function Home ({ route, navigation }) {
     // const userName = route.params.userName
 
     const [userName, setUserName] = useState('')
-    socket.emit("fetch username", sub)    
-    socket.once("get username", args => {
-        setUserName(args)
-    })
+    const fetchUserName = () => {
+        socket.emit("fetch username", sub)    
+        socket.once("get username", args => {
+            setUserName(args)
+        })
+    }
     
     const [balance, setBalance] = useState('...')
     const [reward, setReward] = useState('...')
@@ -50,6 +52,8 @@ export default function Home ({ route, navigation }) {
                 setPendingTransactions(Transactions.data.length)
                 if (Transactions.data.length > 0) {
                     setMineButtonText('Mine Transactions')
+                } else {
+                    ToastAndroid.show('No pending transactions currently available', ToastAndroid.SHORT)
                 }
             })
         } else {
@@ -57,7 +61,7 @@ export default function Home ({ route, navigation }) {
             mineBlock(4, userName)
             setMineButtonText('Fetch Transactions')
             setPendingTransactions(0)
-            Alert.alert('Mining completed!', 'Reward successfully added to your balance')
+            
         }
     }
     
@@ -73,8 +77,8 @@ export default function Home ({ route, navigation }) {
         setBalance(x)
     }
 
-    const fetchReward = async (mobile) => {
-        var x = await getReward(mobile)
+    const fetchReward = async (user) => {
+        var x = await getReward(user)
         setReward(x)
     }
 
@@ -99,6 +103,8 @@ export default function Home ({ route, navigation }) {
     }
     
     useEffect(() => {
+
+        fetchUserName()
 
         console.log('ADD NEW USER LISTENER SUCCESS================================================================')
         socket.on("add new user", args => {
@@ -152,8 +158,8 @@ export default function Home ({ route, navigation }) {
                         (tx, err) => console.log(err)
                     )
                 }
-                fetchUserBalance2(username)
-                fetchReward(username)
+                fetchUserBalance2(userName)
+                fetchReward(userName)
             }, () => console.log('TRANSACTIONS FETCH AND INSERT error'), () => console.log('TRANSACTIONS FETCH AND INSERT SUCCESSFULL'))
         
             console.log('Deleting pending_transactions..')
@@ -196,8 +202,8 @@ export default function Home ({ route, navigation }) {
 
         })
 
-        fetchUserBalance(username)
-        fetchReward(username)
+        fetchUserBalance(userName)
+        fetchReward(userName)
         loadUsers()
         console.log(users)
 
@@ -289,7 +295,7 @@ export default function Home ({ route, navigation }) {
                                 onPress = {() => setModalOpen(false)}
                                 style = {{ ...styles.modalToggle, ...styles.modalClose}}
                             />
-                        <TransactionForm addTransaction = {addTransaction} mobile={mobile} users={users}/>
+                        {/* <TransactionForm addTransaction = {addTransaction} mobile={mobile} users={users}/> */}
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>

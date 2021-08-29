@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
 import TransactionForm from './transactionForm';
@@ -8,6 +8,7 @@ import getBalance from '../database/getBalance';
 export default function MakePaymentScreen ({route, navigation}) {
 
     // const mobile = route.params.mobile
+    const sub = JSON.parse(route.params.token).sub
 
     const [userName, setUserName] = useState('')
     socket.emit("fetch username", sub)    
@@ -32,7 +33,7 @@ export default function MakePaymentScreen ({route, navigation}) {
 
     return (
         <View style={{flex:1}}>
-            <TransactionForm addTransaction = {addTransaction} username={username}/>
+            <TransactionForm addTransaction = {addTransaction} userName={userName}/>
         </View>
     )
 }

@@ -111,7 +111,7 @@ export default function SignInScreen({ navigation }) {
             setData({
                 ...data,
                 username: val,
-                disability: true,
+                // disability: true,
                 check_textInputChange: false
             })
         }

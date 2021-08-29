@@ -144,7 +144,7 @@ export default function SplashScreen({ navigation }) {
                 style={styles.footer} 
                 animation='fadeInUpBig'
             >
-                <Text style={styles.title}>Stay connected with everyone!</Text>
+                <Text style={styles.title}>VIT Remit</Text>
                 <Text style={styles.text}>Sign in with account</Text>
                 <View style={styles.button}>
                     {/* <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}> */}
@@ -170,12 +170,12 @@ export default function SplashScreen({ navigation }) {
 };
 
 const {height} = Dimensions.get("screen");
-const height_logo = height * 0.6;
+const height_logo = height * 0.5;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    backgroundColor: '#1E40AF'
+    backgroundColor: '#FFF'
   },
   header: {
       flex: 2,

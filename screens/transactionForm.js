@@ -107,7 +107,7 @@ export default function TransactionForm({ addTransaction, username}) {
         <View style = {styles.container}>
             
             <Formik
-                initialValues = {{ from: username, to: '', amount: 0 }}
+                initialValues = {{ from: username, to: '', amount: '' }}
                 validationSchema = {reviewSchema}
                 onSubmit = {(values, actions) => {
                     console.log('IM INSIDE SUBMIT HANDLER')

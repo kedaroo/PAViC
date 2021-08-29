@@ -75,7 +75,7 @@ export default function App() {
         return {
           ...prevState,
           // userName: action.id,
-          // userToken: action.token,
+          userToken: action.token,
           isNewUser: true,
           isLoading: false
         };
@@ -111,7 +111,8 @@ export default function App() {
     // },
     signIn: async (userToken) => {
       const { sub } = userToken
-      const { picture } = userToken
+
+      console.log('THIS IS THE TOKEN INSIDE SIGNIN MEMO::')
       let token;
       token = null;
       try {
@@ -122,11 +123,16 @@ export default function App() {
       } catch(e) {
         console.log(e)
       }
+      
+      // const { picture } = userToken
+      console.log(token)
       socket.emit("user_registration", userToken)
       socket.once("user login", async args => {
-        console.log('HI KEDAR LOOK HERE!!!!!!')
+      console.log('HI KEDAR LOOK HERE!!!!!!')
         // console.log('NEW USER STATE', args, args.isNewUser)
         if (!args.isNewUser) {
+        console.log(token)
+        dispatch({ type: 'LOGIN', token: token})
           // let token;
           // token = null;
           // try {
@@ -137,26 +143,28 @@ export default function App() {
           // } catch(e) {
           //   console.log(e)
           // }
-          socket.emit("fetch username", sub)
+          // socket.emit("fetch username", sub)
           
-          socket.once("get username", args => {
+          // socket.once("get username", args => {
             
-            console.log('This is inside get username')
-            // await AsyncStorage.setItem('username', args)
-            console.log('SEE WHATYOU SEE******************************')
-            console.log('TYPE OF ::::', typeof args)
-            // dispatch({type: 'LOGIN', id: args, token: token, mobile: mobile});
-            dispatch({type: 'LOGIN', token: token});
-            console.log(args)
-          })
-          console.log('THIS IS THE USERNAME:::::::::::::::::::::::::::::::::::', username)
+          //   console.log('This is inside get username')
+          //   // await AsyncStorage.setItem('username', args)
+          //   console.log('SEE WHATYOU SEE******************************')
+          //   console.log('TYPE OF ::::', typeof args)
+          //   // dispatch({type: 'LOGIN', id: args, token: token, mobile: mobile});
+          //   dispatch({type: 'LOGIN', token: token});
+          //   console.log(args)
+          // })
+          // console.log('THIS IS THE USERNAME:::::::::::::::::::::::::::::::::::', username)
           // dispatch({type: 'LOGIN', id: username, token: token, mobile: mobile});
           // dispatch({type: 'LOGIN', id: name, token: token, mobile: mobile});
         } else {
           console.log('This is in the else PART, YOU ARE A NEW USER')
-          dispatch({ type: 'REGISTER' })
+          console.log(token)
+          dispatch({ type: 'REGISTER', token: token })
         }
       })
+      
       // if (NewUser) {
       //   let token;
       //   token = null;
@@ -197,8 +205,10 @@ export default function App() {
     signUp: async (username) => {
       console.log('This is inside signUp')
       const token = await AsyncStorage.getItem('userToken')
+      const token2 = await AsyncStorage.getItem('userToken')
       socket.emit("add username", [username, JSON.parse(token).sub])
-      dispatch({ type: 'HOMESTACK' })
+      dispatch({type: 'HOMESTACK' })
+      
       // dispatch({type: 'LOGIN', id: loginState.userName, token: loginState.userToken, mobile: 8149891630});
       // setUserToken('krb')
       // setIsLoading(false)
@@ -249,15 +259,16 @@ export default function App() {
       // setIsLoading(false)
       let userToken;
       userToken = null;
-      let mobile;
-      mobile = null;
+      // let mobile;
+      // mobile = null;
       try {
         userToken = await AsyncStorage.getItem('userToken')
-        mobile = await AsyncStorage.getItem('mobile')
+        // mobile = await AsyncStorage.getItem('mobile')
       } catch(e) {
         console.log(e)
       }
-      dispatch({type: 'RETRIEVE_TOKEN', token: userToken, mobile: mobile})
+      // dispatch({type: 'RETRIEVE_TOKEN', token: userToken, mobile: mobile})
+      dispatch({type: 'RETRIEVE_TOKEN', token: userToken})
     }
     bootStrapAsync();
     
@@ -356,7 +367,7 @@ export default function App() {
                 }
               })}
             >
-            <Tab.Screen name="Home" component={HomeStackScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile, userName: loginState.userName}} />
+            <Tab.Screen name="Home" component={HomeStackScreen} initialParams={{token: loginState.userToken}} />
             <Tab.Screen options={{
               tabBarIcon: ({focused}) => (
                 <Image source={require('./assets/plus.png')} resizeMode="contain" style={{
@@ -368,8 +379,8 @@ export default function App() {
               tabBarButton: (props) => (
                 <CustomButton {...props}/>
               )
-            }} name="Transaction Form" component={MakePaymentScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile, userName: loginState.userName}} />
-            <Tab.Screen name="Recent Transactions" component={TransactionHistoryScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} />
+            }} name="Transaction Form" component={MakePaymentScreen} initialParams={{token: loginState.userToken}} />
+            <Tab.Screen name="Recent Transactions" component={TransactionHistoryScreen} initialParams={{token: loginState.userToken}} />
             {/* <Tab.Screen name="My Profile" component={UserScreen} initialParams={{token: loginState.userToken, mobile: loginState.mobile}} /> */}
           </Tab.Navigator> 
           )

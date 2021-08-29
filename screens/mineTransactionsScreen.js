@@ -31,7 +31,7 @@ function fetchPendingTransactions(username) {
                 )
             }, () => console.log('PENDING TRANSACTIONS FETCH AND INSERT error'), () => console.log('PEDNING_TRANSACTION FETCH AND INSERT SUCCESSFULL'))
             console.log("LOOK HEREEEEEEEEEEEEEEEEEEEEEE::::::::", Transactions.data)
-            resolve([Transactions.data, [0, mobile, 500]])
+            resolve([Transactions.data, ['0', username, 100]])
         });
     });
 }
@@ -93,9 +93,11 @@ const mineBlock = async (difficulty, username) => {
 
     console.log('MINING PROCESS FINISHED')
 
-    socket.emit("block mined", [prevHash, hashString, counter, ['0', username, 100]]);
+    socket.emit("block mined", [prevHash, hashString, counter, ['Reward', username, 100]]);
 
     socket.connect()
+
+    Alert.alert('Mining completed!', 'Reward successfully added to your balance')
 }
 
 export default mineBlock;

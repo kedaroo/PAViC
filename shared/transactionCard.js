@@ -3,10 +3,10 @@ import { FlatList, StyleSheet, Text, View, Image, Button, TouchableOpacity } fro
 
 export default function TransactionCard(props) {
 
-    var users = props.users;
-    console.log('THIS IS INSIDE TRANSACTION CARD: ', users)
+    // var users = props.users;
+    // console.log('THIS IS INSIDE TRANSACTION CARD: ', users)
 
-    if (props.children.from_add == props.username) {
+    if (props.children.from_add == props.userName) {
         // console.log('NAME:::::::::::::::::::::', users[props.children.to_add])
         // var placeholder = props.children.to_add
         var placeholder = props.children.to_add
