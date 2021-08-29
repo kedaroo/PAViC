@@ -25,10 +25,13 @@ import * as AuthSession from 'expo-auth-session';
 import jwtDecode from 'jwt-decode';
 
 const auth0ClientId = "icHaPvJhCgZFFdIHov7myIO6EYeQjYxc";
-const authorizationEndpoint = "https://dev-6deskpi9.us.auth0.com/authorize";
+const authorizationEndpoint = "https://dev-6deskpi9.us.auth0.com/logout?returnTo=com.kedaroo.gamezone://dev-6deskpi9.us.auth0.com/android/com.kedaroo.gamezone/callback";
 
 // const useProxy = Platform.select({ web: false, default: true });
-const redirectUri = AuthSession.makeRedirectUri({ useProxy: false });
+// const redirectUri = AuthSession.makeRedirectUri({ useProxy: false });
+
+const useProxy = Platform.select({ web: false, default: true });
+const redirectUri = AuthSession.makeRedirectUri({ useProxy });
 
 const Tab = createBottomTabNavigator();
 
@@ -181,6 +184,7 @@ export default function App() {
       // }
     },
     signOut: async () => {
+      promptAsync({useProxy: true, redirectUri})
       // setUserToken(null)
       // setIsLoading(false)
       // auth0.webAuth.logout({ client_id: 'sg28rIo9u7bOZicq10rZ4LE7ryT6jRCq'});

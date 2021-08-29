@@ -100,7 +100,7 @@ export default function SignInScreen({ navigation }) {
       }, [result])
 
     const textInputChange = (val) => {
-        if (val.length == 10) {
+        if (val.length > 4) {
             setData({
                 ...data,
                 username: val,
@@ -135,9 +135,13 @@ export default function SignInScreen({ navigation }) {
         signUp(data.username);
     }
 
-    const [checkButton, setCheckButton] = useState('Continue')
+    const [checkButton, setCheckButton] = useState('Submit')
     const userNameHandler = () => {
         var usernameBool;
+        if (data.username.length < 5) {
+            Alert.alert('', 'Minimum 5 characters required')
+            return
+        }
         socket.emit("check user name", data.username)
         socket.once("set username", args => {
             console.log(args)
@@ -163,16 +167,16 @@ export default function SignInScreen({ navigation }) {
                 animation='fadeInUpBig'
                 style={styles.footer}
             >
-                <Text style={styles.text_footer} >Set a new user name.</Text>
-                <Text style={styles.text_footer} >This will be used as your address for making payments.</Text>
+                <Text style={styles.text_footer} >What should people call you?</Text>
+                {/* <Text style={styles.text_footer} >This will be used as your address for making payments.</Text> */}
                 <View style={styles.action}>
                     <FontAwesome 
-                        name="user"
+                        name="user-o"
                         color={'black'}
-                        size={28}
+                        size={26}
                     />
                     <TextInput 
-                        placeholder='Set new user name'
+                        placeholder='Set Username'
                         style={styles.textInput}
                         autoCapitalize='none'
                         onChangeText={(val) => textInputChange(val)}
@@ -240,13 +244,13 @@ export default function SignInScreen({ navigation }) {
                     </TouchableOpacity>
                 </View> */}
 
-                <View style={styles.Button}>
+                <View style={styles.button}>
                     <TouchableOpacity
                         style={styles.signIn}
                         onPress={() => userNameHandler()}
                         disabled={data.disability}
                     >
-                        <LinearGradient
+                        {/* <LinearGradient
                             colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6']}
                             colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#889dfd', '#647ef9', '#3e5ef3']}
                             style={styles.signIn}
@@ -254,7 +258,16 @@ export default function SignInScreen({ navigation }) {
                             <Text style={[styles.textSign, {
                                 color: 'white'
                             }]}>{checkButton}</Text>
-                        </LinearGradient>
+                        </LinearGradient> */}
+
+                        
+                            <Text style={[styles.textSign, {
+                                color: 'white'
+                            }]}>{checkButton}</Text>
+                        
+
+
+
                     </TouchableOpacity>
                     
 
@@ -279,7 +292,7 @@ export default function SignInScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#4968f5'
+      backgroundColor: '#607af8'
     },
     header: {
         flex: 1,
@@ -302,13 +315,13 @@ const styles = StyleSheet.create({
     },
     text_footer: {
         color: '#05375a',
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'justify'
     },
     action: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10,
+        marginVertical: 20,
         // borderBottomWidth: 1,
         borderWidth: 2,
         // borderBottomColor: '#f2f2f2',
@@ -337,15 +350,17 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        marginTop: 50,
+        // alignContent: 'center',
+        // marginTop: 20,
     },
     signIn: {
-        width: '100%',
+        width: '80%',
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
-        marginTop: 20
+        marginTop: 10,
+        backgroundColor: '#607af8'
     },
     textSign: {
         fontSize: 18,

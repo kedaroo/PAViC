@@ -133,11 +133,11 @@ export default function SplashScreen({ navigation }) {
             <StatusBar style='auto'/>
             <View style={styles.header}>
                 <Animatable.Image 
-                    animation='bounceIn'
+                    animation='fadeIn'
                     duraton='1500'
-                    source={require('../assets/icon.png')} 
+                    source={require('../assets/money_transfer.png')} 
                     style={styles.logo}
-                    resizeMode='stretch'
+                    resizeMode='contain'
                 />
             </View>
             <Animatable.View 
@@ -145,19 +145,17 @@ export default function SplashScreen({ navigation }) {
                 animation='fadeInUpBig'
             >
                 <Text style={styles.title}>VIT Remit</Text>
-                <Text style={styles.text}>Sign in with account</Text>
+                <Text style={styles.text}>Your Crypto Payments App</Text>
                 <View style={styles.button}>
-                    {/* <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}> */}
                     <TouchableOpacity onPress={() => promptAsync({ useProxy })}>
-                    {/* <TouchableOpacity onPress={}> */}
                         <LinearGradient
-                            colors={['#93C5FD', '#2563EB']}
+                            colors={['#fff', '#fff']}
                             style={styles.signIn}
                         >
-                            <Text style={styles.textSign}>Get Started</Text>
+                            <Text style={styles.textSign}>Sign in</Text>
                             <MaterialIcons 
                                 name='navigate-next'
-                                color='white'
+                                color='black'
                                 size={20}
                             />
                         </LinearGradient>
@@ -184,28 +182,31 @@ const styles = StyleSheet.create({
   },
   footer: {
       flex: 1,
-      backgroundColor: '#fff',
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      paddingVertical: 50,
-      paddingHorizontal: 30
+      backgroundColor: '#607af8',
+      borderTopLeftRadius: 34,
+      borderTopRightRadius: 34,
+      paddingVertical: 40,
+      paddingHorizontal: 30,
+      alignItems: 'center'
   },
   logo: {
+    //   backgroundColor: 'pink',
       width: height_logo,
       height: height_logo
   },
   title: {
-      color: '#05375a',
-      fontSize: 30,
+      color: '#fff',
+      fontSize: 44,
       fontWeight: 'bold'
   },
   text: {
-      color: 'grey',
-      marginTop:5
+      color: '#fff',
+      marginTop: 5,
+      fontSize: 20
   },
   button: {
-      alignItems: 'flex-end',
-      marginTop: 30
+      alignItems: 'center',
+      marginTop: 30,
   },
   signIn: {
       width: 150,
@@ -213,10 +214,14 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 50,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      
+    //   padding: 25,
+    paddingVertical: 24,
   },
   textSign: {
-      color: 'white',
-      fontWeight: 'bold'
+      color: 'black',
+      fontWeight: 'bold',
+      fontSize: 18
   }
 });
