@@ -56,7 +56,7 @@ export default function TransactionCard(props) {
         userName: {
             color: '#374151',
             // marginTop: -10,
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: 'bold',
             
         },

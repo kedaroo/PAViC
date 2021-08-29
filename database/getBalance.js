@@ -1,4 +1,6 @@
 import db from '../database/database';
+import socket from '../service/socket';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function from(username) {
     return new Promise(function(resolve, reject) {
@@ -11,16 +13,16 @@ function from(username) {
                     // console.log(_array[0]['SUM(amount)'])
                     var result = _array[0]['SUM(amount)']
                     if (result == null) {
-                        console.log('FROM FETCHED')
+                        console.log('FROM AMOUNT::')
                         resolve(0)
                     } else {
-                        console.log('FROM FETCHED')
+                        console.log('FROM AMOUNT::')
                         resolve(_array[0]['SUM(amount)'])
                     }
                 }, 
                 () => console.log('Fetching FROM FAILED!')
             )
-        }, () => console.log('7.1 error'), () => console.log('7.1 SUCCESSFULL'));
+        }, () => console.log('7.1 FROM AMOUNT FETCH error'), () => console.log('7.1 FROM AMOUNT FETCH SUCCESSFULL'));
     })
 }
 
@@ -35,26 +37,37 @@ function to(username) {
                     // console.log(_array[0]['SUM(amount)'])
                     var result = _array[0]['SUM(amount)']
                     if (result == null) {
-                        console.log('TO FETCHED')
+                        console.log('TO AMOUNT::')
                         resolve(0)
                     } else {
-                        console.log('TO FETCHED')
+                        console.log('TO AMOUNT::')
                         resolve(_array[0]['SUM(amount)'])
                     }
                 }, 
                 () => console.log('Fetching TO FAILED!')
             )
-        }, () => console.log('7.2 error'), () => console.log('7.2 SUCCESSFULL'));
+        }, () => console.log('7.2 TO AMOUNT FETCH error'), () => console.log('7.2 TO AMOUNT FETCH SUCCESSFULL'));
     })
 }
 
-const getBalance = (username) => {
+function fetchUserName() {
+    return new Promise(async function(resolve, reject) {
+        const token = await AsyncStorage.getItem('userToken')
+        socket.emit("fetch username", JSON.parse(token).sub)
+        socket.once("get username", args => {
+            resolve(args)
+        })
+    })
+}
+
+const getBalance = () => {
     return new Promise( async function(resolve, reject) {
+        var username = await fetchUserName()
         var from_amt = await from(username)
         var to_amt = await to(username)
         var balance = to_amt - from_amt
         // console.log('THIS IS INSIDE getBalance. THIS IS BALANCE BELOW')
-        console.log('7.3 BALANCE FETCHED')
+        console.log('7.3 BALANCE FETCHED AS FOLLOWS::')
         console.log(balance)
         // console.log('THIS IS BALANCE TYPE: ', typeof balance)
         resolve(balance)

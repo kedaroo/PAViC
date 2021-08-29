@@ -25,7 +25,67 @@ const reviewSchema = yup.object().shape({
     </View>
   );
 
-export default function TransactionForm({ addTransaction, username}) {
+export default function TransactionForm({ addTransaction, userName}) {
+
+    styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            paddingHorizontal:10,
+            paddingVertical: 10,
+            // backgroundColor: 'green'
+        },
+        textInput: {
+            // backgroundColor: 'pink',
+            marginTop: 40,
+            marginBottom: 100,
+            padding: 10,
+            flex:1,
+            justifyContent: 'space-between'
+        },
+        form: {
+            marginTop: 30,
+            paddingVertical: 10,
+            justifyContent: 'space-evenly',
+            // backgroundColor: 'yellow',
+            flex: 1
+        },
+        recipient: {
+            // textAlign: 'center',
+            fontSize: 20,
+            backgroundColor: 'white',
+            padding: 14,
+            elevation: 25,
+            borderRadius: 8
+        },
+        amount: {
+            // textAlign: 'center',
+            fontSize: 20,
+            backgroundColor: 'white',
+            padding: 14,
+            elevation: 25,
+            borderRadius: 8,
+            color:'black'
+            // borderBottomWidth: 1,
+            // borderColor: 'blue'
+        },
+        buttons: {
+            // alignSelf: 'flex-end',
+            backgroundColor: '#4f6cf6',
+            paddingVertical: 16,
+            // paddingHorizontal: 45,
+            marginTop: 22,
+            marginHorizontal: 32,
+            borderRadius: 14,
+            justifyContent: 'center',
+            // elevation: 5
+        },
+        buttonText: {
+            color: 'white',
+            fontSize: 17,
+            alignItems: 'center',
+            textAlign: 'center'
+        }
+    })
 
     const loadUsers = () => {
         db.transaction((tx) => {
@@ -107,7 +167,7 @@ export default function TransactionForm({ addTransaction, username}) {
         <View style = {styles.container}>
             
             <Formik
-                initialValues = {{ from: username, to: '', amount: '' }}
+                initialValues = {{ from: userName, to: '', amount: '' }}
                 validationSchema = {reviewSchema}
                 onSubmit = {(values, actions) => {
                     console.log('IM INSIDE SUBMIT HANDLER')
@@ -180,7 +240,7 @@ export default function TransactionForm({ addTransaction, username}) {
                                 placeholder = 'Amount'
                                 onChangeText = {props.handleChange('amount')}
                                 value = {props.values.amount}
-                                // keyboardType = 'number-pad'
+                                keyboardType = 'number-pad'
                                 onBlur = {props.handleBlur('amount')}
                             />
                             <Text style = {globalStyles.errorText}>{props.touched.amount && props.errors.amount}</Text>
@@ -200,61 +260,3 @@ export default function TransactionForm({ addTransaction, username}) {
     )
 }
 
-styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingHorizontal:10,
-        paddingVertical: 10,
-        // backgroundColor: 'green'
-    },
-    textInput: {
-        // backgroundColor: 'pink',
-        marginTop: 40,
-        marginBottom: 100,
-        padding: 10,
-        flex:1,
-        justifyContent: 'space-between'
-    },
-    form: {
-        marginTop: 30,
-        paddingVertical: 10,
-        justifyContent: 'space-evenly',
-        // backgroundColor: 'yellow',
-        flex: 1
-    },
-    recipient: {
-        // textAlign: 'center',
-        fontSize: 20,
-        backgroundColor: 'white',
-        padding: 14,
-        elevation: 25,
-        borderRadius: 8
-    },
-    amount: {
-        // textAlign: 'center',
-        fontSize: 20,
-        backgroundColor: 'white',
-        padding: 14,
-        elevation: 25,
-        borderRadius: 8
-        // borderBottomWidth: 1,
-        // borderColor: 'blue'
-    },
-    buttons: {
-        // alignSelf: 'flex-end',
-        backgroundColor: '#4f6cf6',
-        paddingVertical: 16,
-        // paddingHorizontal: 45,
-        marginTop: 22,
-        marginHorizontal: 32,
-        borderRadius: 14,
-        justifyContent: 'center',
-        // elevation: 5
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 17,
-        alignItems: 'center',
-        textAlign: 'center'
-    }
-})

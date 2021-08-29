@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl, useCallback } from 'react-native';
+import { View, Text, FlatList, StyleSheet, RefreshControl, useCallback, Image, Dimensions } from 'react-native';
 import db from '../database/database';
 import TransactionCard from '../shared/transactionCard';
 
@@ -8,6 +8,7 @@ export default function TransactionHistoryScreen ({ route }) {
     // const mobile = route.params.mobile
 
     const sub = JSON.parse(route.params.token).sub
+    
 
     const [userName, setUserName] = useState('')
     socket.emit("fetch username", sub)    
@@ -15,29 +16,29 @@ export default function TransactionHistoryScreen ({ route }) {
         setUserName(args)
     })
 
-    const [transactions, setTransactions] = useState();
+    const [transactions, setTransactions] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const [users, setUsers] = useState()
 
-    const loadUsers = () => {
-        db.transaction((tx) => {
-            console.log('TRYING TO LOAD USERS FOR HistoryScreen...')
-            tx.executeSql(
-                'SELECT name, mobile FROM users',
-                [], 
-                (_tx, {rows: {_array} }) => {
-                    console.log('LOADED USERS:')
-                    var dict = {}
-                    for (var i = 0; i < _array.length; i++) {
-                        dict[_array[i].mobile] = _array[i].name 
-                    }
-                    setUsers(dict)
-                    console.log(users)
-                }, 
-                () => console.log('Fetching USERS FOR HISTORY FAILED!')
-            )
-        }, () => console.log('Fetching USERS FOR HISTORY error'), () => console.log('Fetching USERS FOR HISTORY SUCCESSFULL'));
-    }
+    // const loadUsers = () => {
+    //     db.transaction((tx) => {
+    //         console.log('TRYING TO LOAD USERS FOR HistoryScreen...')
+    //         tx.executeSql(
+    //             'SELECT name, mobile FROM users',
+    //             [], 
+    //             (_tx, {rows: {_array} }) => {
+    //                 console.log('LOADED USERS:')
+    //                 var dict = {}
+    //                 for (var i = 0; i < _array.length; i++) {
+    //                     dict[_array[i].mobile] = _array[i].name 
+    //                 }
+    //                 setUsers(dict)
+    //                 console.log(users)
+    //             }, 
+    //             () => console.log('Fetching USERS FOR HISTORY FAILED!')
+    //         )
+    //     }, () => console.log('Fetching USERS FOR HISTORY error'), () => console.log('Fetching USERS FOR HISTORY SUCCESSFULL'));
+    // }
 
 
     const refreshTransactions = () => {
@@ -77,7 +78,7 @@ export default function TransactionHistoryScreen ({ route }) {
     useEffect(() => {
 
         // loadUsers()
-        loadTransactions()
+        // loadTransactions()
         
 
         // socket.on("add new transactions", transactions => {
@@ -96,7 +97,13 @@ export default function TransactionHistoryScreen ({ route }) {
                 <Text style={{color: '#374151', fontSize: 38, fontWeight: '700'}}>Transactions</Text>
             </View>
 
+            
+        
             <View style={{flex:1}}>
+                {/* <Image 
+                    source={require('../assets/empty.png')} 
+                    style={styles.image}
+                />  */}
                 <FlatList 
                     data={transactions}
                     renderItem={({item}) => (
@@ -106,13 +113,13 @@ export default function TransactionHistoryScreen ({ route }) {
                     refreshing={refreshing}
                 />
             </View>
-
             
-
+            
         </View>
     )
 }
-
+const {height} = Dimensions.get("screen");
+const height_logo = height * 0.6;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -128,4 +135,25 @@ const styles = StyleSheet.create({
       marginVertical: 10,
       marginHorizontal: 10
     },
+    imageContainer: {
+        // backgroundColor: 'pink',
+        flex:1,
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    image: {
+        // backgroundColor: 'yellow',
+        resizeMode: 'contain',
+        padding: 0,
+        flex:1,
+        height: height_logo,
+        width: height_logo
+    },
+    message :{
+        color: 'gray',
+        fontSize: 20,
+        // marginTop: -50
+        // marginBottom: 50
+
+    }
   });

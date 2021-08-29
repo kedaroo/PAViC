@@ -31,7 +31,7 @@ function fetchPendingTransactions(username) {
                 )
             }, () => console.log('PENDING TRANSACTIONS FETCH AND INSERT error'), () => console.log('PEDNING_TRANSACTION FETCH AND INSERT SUCCESSFULL'))
             console.log("LOOK HEREEEEEEEEEEEEEEEEEEEEEE::::::::", Transactions.data)
-            resolve([Transactions.data, ['0', username, 100]])
+            resolve([Transactions.data, ['Reward', username, 100]])
         });
     });
 }

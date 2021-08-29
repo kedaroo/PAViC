@@ -112,7 +112,7 @@ export default function App() {
     signIn: async (userToken) => {
       const { sub } = userToken
 
-      console.log('THIS IS THE TOKEN INSIDE SIGNIN MEMO::')
+      // console.log('THIS IS THE TOKEN INSIDE SIGNIN MEMO::')
       let token;
       token = null;
       try {
@@ -125,13 +125,13 @@ export default function App() {
       }
       
       // const { picture } = userToken
-      console.log(token)
+      // console.log(token)
       socket.emit("user_registration", userToken)
       socket.once("user login", async args => {
       console.log('HI KEDAR LOOK HERE!!!!!!')
         // console.log('NEW USER STATE', args, args.isNewUser)
         if (!args.isNewUser) {
-        console.log(token)
+        // console.log(token)
         dispatch({ type: 'LOGIN', token: token})
           // let token;
           // token = null;
@@ -205,7 +205,6 @@ export default function App() {
     signUp: async (username) => {
       console.log('This is inside signUp')
       const token = await AsyncStorage.getItem('userToken')
-      const token2 = await AsyncStorage.getItem('userToken')
       socket.emit("add username", [username, JSON.parse(token).sub])
       dispatch({type: 'HOMESTACK' })
       

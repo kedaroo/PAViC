@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
 import TransactionForm from './transactionForm';
@@ -10,11 +10,17 @@ export default function MakePaymentScreen ({route, navigation}) {
     // const mobile = route.params.mobile
     const sub = JSON.parse(route.params.token).sub
 
-    const [userName, setUserName] = useState('')
-    socket.emit("fetch username", sub)    
-    socket.once("get username", args => {
-        setUserName(args)
-    })
+    const [userName, setUserName] = useState('yash123456')
+    const fetchUserName = () => {
+        socket.emit("fetch username", sub)    
+        socket.once("get username", args => {
+            setUserName(args)
+        })
+    }
+    
+    // useEffect(() => {
+    //     fetchUserName()
+    // }, [])
 
     const addTransaction = async (transaction) => {
         var userBalance = await getBalance(transaction.from)
@@ -24,7 +30,7 @@ export default function MakePaymentScreen ({route, navigation}) {
             return
         }
         socket.once("transaction acknowledgement", data => {
-            Alert.alert('',data.message)
+            Alert.alert('', data.message)
         })
         console.log('TRANSACTION emitted: ', transaction)
         socket.emit("transaction", transaction);
