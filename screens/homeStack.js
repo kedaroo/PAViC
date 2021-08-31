@@ -16,7 +16,4 @@ const HomeStackScreen = ({ navigation, route }) => {
     )
 }
     
-    
-
-
 export default HomeStackScreen;
