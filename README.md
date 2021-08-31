@@ -1,3 +1,10 @@
+<p align="center">
+  <img src="https://i.ibb.co/7tcN08L/feature.png" alt="feature" border="0">
+</p>
+
+## **What is PAViC?**
+Introducing PAViC, a simple, easy-to-use and a hassle-free app for making fast and secure payments to your friends and family using your mobile phone, powered by blockchain. It uses its own cryptocurrency called Vitcoin (named after my alma mater VIT, Pune.😉🏫). Based on a completely decentralized platform, PAViC stores all your personal and sensitive financial data in a distributed fashion with strict access controls. The app makes sure that it's only you who has the right to access to your sensitive data and nobody else. There is no central entity in control, hence, gone are the days of abuse of your personal information. Read on to find out more!
+
 ## **Things you can do on PAViC:**
 ### App Walkthrough
 
