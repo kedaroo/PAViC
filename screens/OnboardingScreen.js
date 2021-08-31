@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 
 export default function ({ navigation }) {
@@ -40,12 +40,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     image: {
-        // flex:1,
         width: '100%',
         height: '100%',
-        // backgroundColor: 'blue',
         resizeMode: 'center',
-        // paddingVertical: -100
-        // marginVertical: -150
     }
 })
