@@ -1,4 +1,3 @@
-import React from 'react';
 import { Alert } from 'react-native';
 import socket from '../service/socket';
 import db from '../database/database';
@@ -30,7 +29,6 @@ function fetchPendingTransactions(username) {
                     (tx, err) => console.log(err)
                 )
             }, () => console.log('PENDING TRANSACTIONS FETCH AND INSERT error'), () => console.log('PEDNING_TRANSACTION FETCH AND INSERT SUCCESSFULL'))
-            console.log("LOOK HEREEEEEEEEEEEEEEEEEEEEEE::::::::", Transactions.data)
             resolve([Transactions.data, ['Reward', username, 100]])
         });
     });
@@ -39,7 +37,6 @@ function fetchPendingTransactions(username) {
 // fetching previous hash
 function fetchPrevHash() {
     return new Promise(function(resolve, reject) {
-        // fetching prevHash
         db.transaction((tx) => {
             tx.executeSql(
                 'SELECT hash FROM blocks ORDER BY id DESC LIMIT 1',
@@ -56,47 +53,22 @@ function fetchPrevHash() {
 
 const mineBlock = async (difficulty, username) => {
 
-    console.log('============================================================')
-    console.log('mineBlock FUNCTION INVOKED')
-
     var prevHash = '';
     var counter = 0;
-
-    console.log('FETCHING PREV_HASH')
-
     prevHash = await fetchPrevHash();
-
-    console.log('FETCHED PREV_HASH: ', prevHash)
-    console.log('FETCHED PREV_HASH TYPE: ', typeof prevHash)
-
-    console.log('FETCHING PENDING TRANSACTIONS')
-
     var pending_transactions = await fetchPendingTransactions(username);
-
     if (pending_transactions.length == 0) {
         Alert.alert('Mining Error', 'There are no pending Transactions to mine')
         return
     }
-    
-    console.log('PENDING TRANSACTIONS FETCHED: ', pending_transactions)
-
     socket.disconnect()
-
-    console.log('STARTING MINING PROCESS')
-
     var hashString = '1234678910';
-    
     while (hashString.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
         counter++;            
         hashString = SHA256(prevHash + JSON.stringify(pending_transactions) + counter).toString();
     }
-
-    console.log('MINING PROCESS FINISHED')
-
     socket.emit("block mined", [prevHash, hashString, counter, ['Reward', username, 100]]);
-
     socket.connect()
-
     Alert.alert('Mining completed!', 'Reward successfully added to your balance')
 }
 
