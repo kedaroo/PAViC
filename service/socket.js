@@ -5,6 +5,4 @@ socket = io("https://vitcoin.herokuapp.com/", {
     upgrade: false
 });
 
-// socket = io("https://vitcoin.herokuapp.com/");
-
 export default socket;
