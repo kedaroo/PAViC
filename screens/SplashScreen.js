@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import * as AuthSession from 'expo-auth-session';
 import jwtDecode from 'jwt-decode';
@@ -24,53 +23,9 @@ const redirectUri = AuthSession.makeRedirectUri({ useProxy });
 
 export default function SplashScreen({ navigation }) {
 
-    const [data, setData] = useState({
-        username: '',
-        password: '',
-        token: '',
-        monile: ''
-        // check_textInputChange: false,
-        // secureTextEntry: true
-    })
-
     const { signIn } = useContext(AuthContext);
 
-    // const textInputChange = (val) => {
-    //     if (val.length != 0) {
-    //         setData({
-    //             ...data,
-    //             username: val,
-    //             check_textInputChange: true
-    //         })
-    //     } else {
-    //         setData({
-    //             ...data,
-    //             username: val,
-    //             check_textInputChange: false
-    //         })
-    //     }
-    // }
-
-    // const handlePasswordChange = (val) => {
-    //     setData({
-    //         ...data,
-    //         password: val
-    //     })
-    // }
-
-    // const updateSecureTestEntry = () => {
-    //     setData({
-    //         ...data,
-    //         secureTextEntry: !data.secureTextEntry
-    //     })
-    // }
-
-    // const loginHandle = (username, password) => {
-    //     signIn(username, password);
-    // }
-
     const loginHandle = (token) => {
-        // console.log('Inisde login handle', token)
         signIn(token);
     }
 
@@ -78,12 +33,9 @@ export default function SplashScreen({ navigation }) {
         {
           redirectUri,
           clientId: auth0ClientId,
-          // id_token will return a JWT token
           responseType: 'id_token',
-          // retrieve the user's profile
           scopes: ['openid', 'profile'],
           extraParams: {
-            // ideally, this will be a random value
             nonce: 'nonceassa',
           },
         },
@@ -101,32 +53,13 @@ export default function SplashScreen({ navigation }) {
             return;
           }
           if (result.type === 'success') {
-            // Retrieve the JWT token and decode it
             const jwtToken = result.params.id_token;
             const decoded = jwtDecode(jwtToken);
-            // console.log('HELOOOOOOOOOO::THIS IS THE RESULT', decoded)
-            // const { picture } = decoded;
-            // const { name } = decoded;
             loginHandle(decoded)
-            // dispatch({type: 'RETRIEVE_TOKEN', token: aud})
-            // console.log
-            // setName(name);
           }
         }
-    
-        // setTimeout(async () => {
-        //   // setIsLoading(false)
-        //   let userToken;
-        //   userToken = null;
-        //   try {
-        //     userToken = await AsyncStorage.getItem('userToken', userToken)
-        //   } catch(e) {
-        //     console.log(e)
-        //   }
-        //   dispatch({type: 'RETRIEVE_TOKEN', token: userToken})
-        // }, 1000)
         
-      }, [result])
+    }, [result])
 
     return (
         <View style={styles.container}>
@@ -145,7 +78,6 @@ export default function SplashScreen({ navigation }) {
                 animation='fadeInUpBig'
             >
                 <Text style={styles.title}>PAViC</Text>
-                {/* <Text style={styles.text}>Your Crypto Payments App</Text> */}
                 <Text style={styles.text}>Payment App for Vitcoin Cryptocurrency</Text>
                 <View style={styles.button}>
                     <TouchableOpacity onPress={() => promptAsync({ useProxy })}>
@@ -154,13 +86,7 @@ export default function SplashScreen({ navigation }) {
                             style={styles.signIn}
                         >
                             <Text style={styles.textSign}>Sign in</Text>
-                            {/* <MaterialIcons 
-                                name='navigate-next'
-                                color='black'
-                                size={20}
-                            /> */}
                         </LinearGradient>
-
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
@@ -191,7 +117,6 @@ const styles = StyleSheet.create({
       alignItems: 'center'
   },
   logo: {
-    //   backgroundColor: 'pink',
       width: height_logo,
       height: height_logo,
     resizeMode: 'contain'
@@ -218,9 +143,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       borderRadius: 50,
       flexDirection: 'row',
-      
-    //   padding: 25,
-    paddingVertical: 24,
+      paddingVertical: 24,
   },
   textSign: {
       color: 'black',
