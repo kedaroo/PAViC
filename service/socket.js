@@ -1,8 +1,8 @@
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
 socket = io("https://vitcoin.herokuapp.com/", {
-    transports: ['websocket'],
-    upgrade: false
+  transports: ["websocket"],
+  upgrade: false,
 });
 
 export default socket;
