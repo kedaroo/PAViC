@@ -9,7 +9,6 @@ import socket from './service/socket';
 // screens
 import Home from './screens/home_copy';
 import TransactionHistoryScreen from './screens/transactionHistoryScreen';
-import UserScreen from './screens/userScreen';
 import TransactionForm from './screens/transactionForm';
 import HomeStackScreen from './screens/homeStack';
 import MakePaymentScreen from './screens/makePaymentScreen';
