@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import socket from './service/socket';
-import Tabs from './screens/AppScreen';
+// import Tabs from './screens/AppScreen';
 
 // screens
 import Home from './screens/home_copy';
