@@ -7,7 +7,6 @@ export default function TransactionHistoryScreen ({ route }) {
 
     const sub = JSON.parse(route.params.token).sub
     
-
     const [userName, setUserName] = useState('')
     socket.emit("fetch username", sub)    
     socket.once("get username", args => {
