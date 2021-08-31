@@ -9,6 +9,7 @@ Introducing PAViC, a simple, easy-to-use and a hassle-free app for making fast a
 ### App Walkthrough
 
 - **One click signup powered by Auth0⚡. Create free account!** 
+- 
 ![ezgif.com-gif-maker (3).gif](https://cdn.hashnode.com/res/hashnode/image/upload/v1630384769990/LIxGIzWVb.gif)
 
 - **Get a reward on signup!** 💰
@@ -16,6 +17,7 @@ Introducing PAViC, a simple, easy-to-use and a hassle-free app for making fast a
 ![222.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1630387439469/GS8Bi6bM2Z.png)
 
 - **Make hassle free payments.** 💸
+- 
 ![ezgif.com-gif-maker (4).gif](https://cdn.hashnode.com/res/hashnode/image/upload/v1630385421242/p1FKvfGxp.gif)
 
 - **Mine transactions and earn rewards!** ✨
