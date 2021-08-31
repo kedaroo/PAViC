@@ -142,7 +142,7 @@ function updateBlocks() {
 
         socket.once("update blocks", blocks => {
             console.log('This is inside UPDATE BLOCKS listener')
-            // console.log('RECEIVED BLOCKS::', blocks)
+            console.log('RECEIVED BLOCKS::', blocks)
             if (blocks.data.length != 0) {
                 // console.log(blocks)
                 for (let block of blocks.data) {

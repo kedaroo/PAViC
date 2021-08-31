@@ -25,7 +25,7 @@ import * as AuthSession from 'expo-auth-session';
 import jwtDecode from 'jwt-decode';
 
 const auth0ClientId = "icHaPvJhCgZFFdIHov7myIO6EYeQjYxc";
-const authorizationEndpoint = "https://dev-6deskpi9.us.auth0.com/logout?returnTo=com.kedaroo.gamezone://dev-6deskpi9.us.auth0.com/android/com.kedaroo.gamezone/callback";
+const authorizationEndpoint = "https://dev-6deskpi9.us.auth0.com/logout";
 
 // const useProxy = Platform.select({ web: false, default: true });
 // const redirectUri = AuthSession.makeRedirectUri({ useProxy: false });
@@ -131,7 +131,6 @@ export default function App() {
       // console.log(token)
       socket.emit("user_registration", userToken)
       socket.once("user login", async args => {
-      console.log('HI KEDAR LOOK HERE!!!!!!')
         // console.log('NEW USER STATE', args, args.isNewUser)
         if (!args.isNewUser) {
         // console.log(token)
@@ -184,6 +183,11 @@ export default function App() {
       // }
     },
     signOut: async () => {
+      try {
+        await AsyncStorage.removeItem('userToken')
+      } catch(e) {
+        console.log(e)
+      }
       promptAsync({useProxy: true, redirectUri})
       // setUserToken(null)
       // setIsLoading(false)
@@ -199,11 +203,7 @@ export default function App() {
     // .catch(error => {
     //     console.log('Log out cancelled');
     // });
-      try {
-        await AsyncStorage.removeItem('userToken')
-      } catch(e) {
-        console.log(e)
-      }
+      
       dispatch({type: 'LOGOUT' })
     },
     signUp: async (username) => {

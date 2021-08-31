@@ -17,7 +17,7 @@ const RootStackScreen = ({ navigation }) => {
     const [isFirstLaunch, setIsFirstLaunch] = useState(null)
 
     useEffect(() => {
-        AsyncStorage.getItem('alreadyLaunchedd').then(value => {
+        AsyncStorage.getItem('alreadyLaunched').then(value => {
             if(value == null) {
                 AsyncStorage.setItem('alreadyLaunched', 'true')
                 setIsFirstLaunch(true)
@@ -34,8 +34,8 @@ const RootStackScreen = ({ navigation }) => {
             <RootStack.Navigator screenOptions={{headerShown:false}}>
                 <RootStack.Screen name='Onboarding' component={OnboardingScreen} />
                 <RootStack.Screen name='SplashScreen' component={SplashScreen} />
-                <RootStack.Screen name='SignInScreen' component={SignInScreen} />
-                <RootStack.Screen name='SignUpScreen' component={SignUpScreen} />
+                {/* <RootStack.Screen name='SignInScreen' component={SignInScreen} /> */}
+                {/* <RootStack.Screen name='SignUpScreen' component={SignUpScreen} /> */}
             </RootStack.Navigator>
         )
     } else {

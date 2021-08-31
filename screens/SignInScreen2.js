@@ -170,11 +170,11 @@ export default function SignInScreen({ navigation }) {
                 <Text style={styles.text_footer} >What should people call you?</Text>
                 {/* <Text style={styles.text_footer} >This will be used as your address for making payments.</Text> */}
                 <View style={styles.action}>
-                    <FontAwesome 
+                    {/* <FontAwesome 
                         name="user-o"
                         color={'black'}
                         size={26}
-                    />
+                    /> */}
                     <TextInput 
                         placeholder='Set Username'
                         style={styles.textInput}
@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
     },
     text_header: {
         color: '#fff',
+        // color: 'black',
         fontWeight: 'bold',
         fontSize: 32
     },

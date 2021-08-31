@@ -19,6 +19,8 @@ export default function Home ({ route, navigation }) {
     const image = JSON.parse(route.params.token).picture
     const sub = JSON.parse(route.params.token).sub
 
+    const [renderTimes, setRenderTimes] = useState(0)
+
     const [userName, setUserName] = useState('')
     const [balance, setBalance] = useState('...')
     const [reward, setReward] = useState('...')
@@ -26,13 +28,6 @@ export default function Home ({ route, navigation }) {
     // const [users, setUsers] = useState()
     const [mineButtonText, setMineButtonText] = useState('Fetch Transactions')
 
-    const fetchUserName = () => {
-        socket.emit("fetch username", sub)    
-        socket.once("get username", args => {
-            setUserName(args)
-        })
-    }
-    
     const { signOut } = useContext(AuthContext)
 
     const mineButtonHandler = () => {
@@ -71,6 +66,15 @@ export default function Home ({ route, navigation }) {
     }
     
     useEffect(() => {
+
+        setRenderTimes(renderTimes + 1)
+
+        const fetchUserName = () => {
+            socket.emit("fetch username", sub)    
+            socket.once("get username", args => {
+                setUserName(args)
+            })
+        }
 
         fetchUserName()
 
@@ -144,30 +148,38 @@ export default function Home ({ route, navigation }) {
         // loadUsers()
         // console.log(users)
 
+        return function cleanup() {
+            socket.removeAllListeners("add new users")
+            socket.removeAllListeners("add new block")
+            socket.removeAllListeners("add new transactions")
+        }
+
     }, []);
 
     const showBlocksHandler = () => {
-        db.transaction((tx) => {
-            tx.executeSql(
-                'select * from blocks',
-                [], 
-                (_tx, {rows }) => {
-                    console.log('(INSIDE NEW TRANSACTION LISTENER)THE BLOCKS::', rows)
-                }, 
-                () => console.log('NEW BLOCK INSERT FAILED')
-            )
-        }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
+        // db.transaction((tx) => {
+        //     tx.executeSql(
+        //         'select * from blocks',
+        //         [], 
+        //         (_tx, {rows }) => {
+        //             console.log('(INSIDE NEW TRANSACTION LISTENER)THE BLOCKS::', rows)
+        //         }, 
+        //         () => console.log('NEW BLOCK INSERT FAILED')
+        //     )
+        // }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
 
-        db.transaction((tx) => {
-            tx.executeSql(
-                'select * from transactions',
-                [], 
-                (_tx, {rows }) => {
-                    console.log('(INSIDE NEW TRANSACTION LISTENER)THE TRANSACTIONS::', rows)
-                }, 
-                () => console.log('NEW BLOCK INSERT FAILED')
-            )
-        }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
+        // db.transaction((tx) => {
+        //     tx.executeSql(
+        //         'select * from transactions',
+        //         [], 
+        //         (_tx, {rows }) => {
+        //             console.log('(INSIDE NEW TRANSACTION LISTENER)THE TRANSACTIONS::', rows)
+        //         }, 
+        //         () => console.log('NEW BLOCK INSERT FAILED')
+        //     )
+        // }, () => console.log('ADD NEW BLOCK LISTENER error'), () => console.log('ADD NEW BLOCK SUCCESSFULL'));
+
+        console.log('RENDER TIMES:::::::::', renderTimes)
     }
     
     const addTransaction = async (transaction) => {
@@ -260,7 +272,8 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingTop: 30,
         marginBottom: 100,
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        // backgroundColor: '#fff'
     },  
     miningCard: {
         backgroundColor: '#fff',

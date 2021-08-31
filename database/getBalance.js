@@ -53,8 +53,10 @@ function to(username) {
 function fetchUserName() {
     return new Promise(async function(resolve, reject) {
         const token = await AsyncStorage.getItem('userToken')
+        console.log('This is inside fetch username. sub sent::', JSON.parse(token).sub)
         socket.emit("fetch username", JSON.parse(token).sub)
         socket.once("get username", args => {
+            console.log('This is inside fetch username. username received::', args)
             resolve(args)
         })
     })

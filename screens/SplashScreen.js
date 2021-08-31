@@ -144,8 +144,9 @@ export default function SplashScreen({ navigation }) {
                 style={styles.footer} 
                 animation='fadeInUpBig'
             >
-                <Text style={styles.title}>VIT Remit</Text>
-                <Text style={styles.text}>Your Crypto Payments App</Text>
+                <Text style={styles.title}>PAViC</Text>
+                {/* <Text style={styles.text}>Your Crypto Payments App</Text> */}
+                <Text style={styles.text}>Payment App for Vitcoin Cryptocurrency</Text>
                 <View style={styles.button}>
                     <TouchableOpacity onPress={() => promptAsync({ useProxy })}>
                         <LinearGradient
@@ -153,11 +154,11 @@ export default function SplashScreen({ navigation }) {
                             style={styles.signIn}
                         >
                             <Text style={styles.textSign}>Sign in</Text>
-                            <MaterialIcons 
+                            {/* <MaterialIcons 
                                 name='navigate-next'
                                 color='black'
                                 size={20}
-                            />
+                            /> */}
                         </LinearGradient>
 
                     </TouchableOpacity>
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
       alignItems: 'center'
   },
   footer: {
-      flex: 1,
+      flex: 1.2,
       backgroundColor: '#607af8',
       borderTopLeftRadius: 34,
       borderTopRightRadius: 34,
@@ -192,7 +193,8 @@ const styles = StyleSheet.create({
   logo: {
     //   backgroundColor: 'pink',
       width: height_logo,
-      height: height_logo
+      height: height_logo,
+    resizeMode: 'contain'
   },
   title: {
       color: '#fff',
@@ -202,7 +204,8 @@ const styles = StyleSheet.create({
   text: {
       color: '#fff',
       marginTop: 5,
-      fontSize: 20
+      fontSize: 20,
+      textAlign: 'center'
   },
   button: {
       alignItems: 'center',

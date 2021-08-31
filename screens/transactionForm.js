@@ -32,42 +32,36 @@ export default function TransactionForm({ addTransaction, userName}) {
             flex: 1,
             paddingHorizontal:10,
             paddingVertical: 10,
-            // backgroundColor: 'green'
+            backgroundColor: '#fff'
         },
         textInput: {
             // backgroundColor: 'pink',
-            marginTop: 40,
+            marginTop: 25,
             marginBottom: 100,
             padding: 10,
             flex:1,
             justifyContent: 'space-between'
         },
         form: {
-            marginTop: 30,
+            // marginTop: 30,
             paddingVertical: 10,
             justifyContent: 'space-evenly',
             // backgroundColor: 'yellow',
             flex: 1
         },
-        recipient: {
+        action: {
             // textAlign: 'center',
-            fontSize: 20,
+            fontSize: 18,
             backgroundColor: 'white',
-            padding: 14,
-            elevation: 25,
-            borderRadius: 8
+            paddingBottom: 10,
+            // elevation: 25,
+            borderBottomColor: 'black',
+            borderBottomWidth: 1,
+            marginHorizontal: 10,
+            marginTop: 16
+            // borderRadius: 8
         },
-        amount: {
-            // textAlign: 'center',
-            fontSize: 20,
-            backgroundColor: 'white',
-            padding: 14,
-            elevation: 25,
-            borderRadius: 8,
-            color:'black'
-            // borderBottomWidth: 1,
-            // borderColor: 'blue'
-        },
+        
         buttons: {
             // alignSelf: 'flex-end',
             backgroundColor: '#4f6cf6',
@@ -84,6 +78,11 @@ export default function TransactionForm({ addTransaction, userName}) {
             fontSize: 17,
             alignItems: 'center',
             textAlign: 'center'
+        },
+        prompt: {
+            fontSize: 16,
+            marginBottom: 8,
+            marginLeft: 2
         }
     })
 
@@ -171,6 +170,7 @@ export default function TransactionForm({ addTransaction, userName}) {
                 validationSchema = {reviewSchema}
                 onSubmit = {(values, actions) => {
                     console.log('IM INSIDE SUBMIT HANDLER')
+                    // console.log('This is the username::', userName)
                     actions.resetForm()
                     addTransaction(values);
                 }}
@@ -198,35 +198,9 @@ export default function TransactionForm({ addTransaction, userName}) {
                         <View style={styles.form}>
                             <View>
 
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <TextInput 
-                                style = {styles.recipient}
-                                placeholder = 'Recipient'
+                                style = {styles.action}
+                                placeholder = 'Enter the username of recipient'
                                 onChangeText = {props.handleChange('to')}
                                 value = {props.values.to}
                                 onBlur = {props.handleBlur('to')}
@@ -235,15 +209,18 @@ export default function TransactionForm({ addTransaction, userName}) {
                             />
                             <Text style = {globalStyles.errorText}>{props.touched.to && props.errors.to}</Text>
 
+                            
                             <TextInput 
-                                style = {styles.amount}
-                                placeholder = 'Amount'
+                                style = {styles.action}
+                                placeholder = 'Enter the amount'
                                 onChangeText = {props.handleChange('amount')}
                                 value = {props.values.amount}
                                 keyboardType = 'number-pad'
                                 onBlur = {props.handleBlur('amount')}
                             />
                             <Text style = {globalStyles.errorText}>{props.touched.amount && props.errors.amount}</Text>
+                            </View>
+                            <View> 
 
                             <TouchableHighlight style={styles.buttons} underlayColor='#1E40AF' onPress = {props.handleSubmit}>
                                 <Text style={styles.buttonText}>Send Money</Text>
