@@ -1,24 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
-import {
-    View, 
-    Text,
-    Button,
-    StyleSheet,
-    TouchableOpacity,
-    Dimensions,
-    Platform,
-    TextInput,
-    Alert
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, TextInput, Alert } from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-// import socket from '../service/socket';
 
 import { AuthContext } from '../components/context';
 
@@ -49,12 +34,9 @@ export default function SignInScreen({ navigation }) {
         {
           redirectUri,
           clientId: auth0ClientId,
-          // id_token will return a JWT token
           responseType: 'id_token',
-          // retrieve the user's profile
           scopes: ['openid', 'profile'],
           extraParams: {
-            // ideally, this will be a random value
             nonce: 'nonceassa',
           },
         },
@@ -64,40 +46,21 @@ export default function SignInScreen({ navigation }) {
     useEffect(() => {
 
         if (result) {
-          if (result.error) {
-            Alert.alert(
-              'Authentication error',
-              result.params.error_description || 'something went wrong'
-            );
-            return;
-          }
-          if (result.type === 'success') {
-            // Retrieve the JWT token and decode it
-            const jwtToken = result.params.id_token;
-            const decoded = jwtDecode(jwtToken);
-            console.log('HELOOOOOOOOOO::', decoded)
-            const { aud } = decoded;
-            const { given_name } = decoded;
-            loginHandle(given_name, decoded)
-            // dispatch({type: 'RETRIEVE_TOKEN', token: aud})
-            // console.log
-            // setName(name);
-          }
+            if (result.error) {
+                Alert.alert(
+                    'Authentication error',
+                    result.params.error_description || 'something went wrong'
+                );
+                return;
+            }
+            if (result.type === 'success') {
+                const jwtToken = result.params.id_token;
+                const decoded = jwtDecode(jwtToken);
+                const { given_name } = decoded;
+                loginHandle(given_name, decoded)
+            }
         }
-    
-        // setTimeout(async () => {
-        //   // setIsLoading(false)
-        //   let userToken;
-        //   userToken = null;
-        //   try {
-        //     userToken = await AsyncStorage.getItem('userToken', userToken)
-        //   } catch(e) {
-        //     console.log(e)
-        //   }
-        //   dispatch({type: 'RETRIEVE_TOKEN', token: userToken})
-        // }, 1000)
-        
-      }, [result])
+    }, [result])
 
     const textInputChange = (val) => {
         if (val.length > 4) {
@@ -111,33 +74,16 @@ export default function SignInScreen({ navigation }) {
             setData({
                 ...data,
                 username: val,
-                // disability: true,
                 check_textInputChange: false
             })
         }
-    }
-
-    const handlePasswordChange = (val) => {
-        setData({
-            ...data,
-            password: val
-        })
-    }
-
-    const updateSecureTestEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
-        })
     }
 
     const loginHandle = () => {
         signUp(data.username);
     }
 
-    const [checkButton, setCheckButton] = useState('Submit')
     const userNameHandler = () => {
-        var usernameBool;
         if (data.username.length < 5) {
             Alert.alert('', 'Minimum 5 characters required')
             return
@@ -146,14 +92,11 @@ export default function SignInScreen({ navigation }) {
         socket.once("set username", args => {
             console.log(args)
             if (args) {
-                // Alert.alert('', 'Username available')
                 loginHandle()
             } else {
                 Alert.alert('Username already exists!', 'Please try again with another username')
             }
         })
-        
-        // setCheckButton('Hello')
     }
 
     return (
@@ -168,19 +111,12 @@ export default function SignInScreen({ navigation }) {
                 style={styles.footer}
             >
                 <Text style={styles.text_footer} >What should people call you?</Text>
-                {/* <Text style={styles.text_footer} >This will be used as your address for making payments.</Text> */}
                 <View style={styles.action}>
-                    {/* <FontAwesome 
-                        name="user-o"
-                        color={'black'}
-                        size={26}
-                    /> */}
                     <TextInput 
                         placeholder='Set Username'
                         style={styles.textInput}
                         autoCapitalize='none'
                         onChangeText={(val) => textInputChange(val)}
-                        // keyboardType='phone-pad'
                         maxLength={12}
                     />
                     {data.check_textInputChange ?  
@@ -208,41 +144,6 @@ export default function SignInScreen({ navigation }) {
 
                     }
                 </View>
-{/* 
-                <Text style={[styles.text_footer,
-                        {marginTop: 35}]} >Password</Text>
-
-                <View style={styles.action}>
-                    <Feather 
-                        name="lock"
-                        color={'black'}
-                        size={20}
-                    />
-                    <TextInput 
-                        placeholder='Your Password'
-                        secureTextEntry={data.secureTextEntry ? true : false}
-                        style={styles.textInput}
-                        autoCapitalize='none'
-                        onChangeText={(val) => handlePasswordChange(val)}
-                    />
-                    <TouchableOpacity
-                        onPress={updateSecureTestEntry}
-                    >
-                        {data.secureTextEntry ? 
-                            <Feather 
-                                name='eye-off'
-                                color = 'grey'
-                                size={20}
-                            />
-                            :
-                            <Feather 
-                                name='eye'
-                                color = 'grey'
-                                size={20}
-                            />
-                        }
-                    </TouchableOpacity>
-                </View> */}
 
                 <View style={styles.button}>
                     <TouchableOpacity
@@ -250,40 +151,9 @@ export default function SignInScreen({ navigation }) {
                         onPress={() => userNameHandler()}
                         disabled={data.disability}
                     >
-                        {/* <LinearGradient
-                            colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6']}
-                            colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#889dfd', '#647ef9', '#3e5ef3']}
-                            style={styles.signIn}
-                        >
-                            <Text style={[styles.textSign, {
-                                color: 'white'
-                            }]}>{checkButton}</Text>
-                        </LinearGradient> */}
-
-                        
-                            <Text style={[styles.textSign, {
-                                color: 'white'
-                            }]}>{checkButton}</Text>
-                        
-
-
-
+                        <Text style={[styles.textSign, {color: 'white'}]}>Submit</Text>
                     </TouchableOpacity>
-                    
-
-                    {/* <TouchableOpacity
-                        onPress={() => navigation.navigate('SignUpScreen')}
-                        style={[styles.signIn, {
-                            borderColor: 'violet',
-                            borderWidth: 1,
-                        }]}
-                    >
-                        <Text style={[styles.textSign, {
-                            color: 'violet'
-                        }]} >Sign Up</Text>
-                    </TouchableOpacity> */}
                 </View>
-
             </Animatable.View>
         </View>
     );
@@ -310,7 +180,6 @@ const styles = StyleSheet.create({
     },
     text_header: {
         color: '#fff',
-        // color: 'black',
         fontWeight: 'bold',
         fontSize: 32
     },
@@ -323,11 +192,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 20,
-        // borderBottomWidth: 1,
         borderWidth: 2,
-        // borderBottomColor: '#f2f2f2',
         borderColor: '#f2f2f2',
-        // paddingBottom: 5
         borderRadius: 10,
         padding: 14
     },
@@ -340,7 +206,6 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flex: 1,
-        // marginTop: Platform.OS === 'ios' ? 0 : -6,
         paddingLeft: 12,
         color: '#05375a',
         fontSize: 18
@@ -351,8 +216,6 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        // alignContent: 'center',
-        // marginTop: 20,
     },
     signIn: {
         width: '80%',
