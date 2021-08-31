@@ -7,8 +7,7 @@ import {
     TouchableOpacity,
     Dimensions,
     Platform,
-    TextInput,
-    Alert
+    TextInput
 } from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
@@ -18,13 +17,11 @@ import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-// import socket from '../service/socket';
 
 import { AuthContext } from '../components/context';
 
 import * as AuthSession from 'expo-auth-session';
 import jwtDecode from 'jwt-decode';
-import socket from '../service/socket';
 
 const auth0ClientId = "icHaPvJhCgZFFdIHov7myIO6EYeQjYxc";
 const authorizationEndpoint = "https://dev-6deskpi9.us.auth0.com/authorize";
@@ -43,7 +40,7 @@ export default function SignInScreen({ navigation }) {
         secureTextEntry: true
     })
 
-    const { signUp } = useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
 
     const [request, result, promptAsync] = AuthSession.useAuthRequest(
         {
@@ -100,10 +97,10 @@ export default function SignInScreen({ navigation }) {
       }, [result])
 
     const textInputChange = (val) => {
-        if (val.length > 4) {
+        if (val.length == 10) {
             setData({
                 ...data,
-                username: val,
+                mobile: val,
                 check_textInputChange: true,
                 disability: false
             })
@@ -111,7 +108,7 @@ export default function SignInScreen({ navigation }) {
             setData({
                 ...data,
                 username: val,
-                // disability: true,
+                disability: true,
                 check_textInputChange: false
             })
         }
@@ -131,57 +128,35 @@ export default function SignInScreen({ navigation }) {
         })
     }
 
-    const loginHandle = () => {
-        signUp(data.username);
-    }
-
-    const [checkButton, setCheckButton] = useState('Submit')
-    const userNameHandler = () => {
-        var usernameBool;
-        if (data.username.length < 5) {
-            Alert.alert('', 'Minimum 5 characters required')
-            return
-        }
-        socket.emit("check user name", data.username)
-        socket.once("set username", args => {
-            console.log(args)
-            if (args) {
-                // Alert.alert('', 'Username available')
-                loginHandle()
-            } else {
-                Alert.alert('Username already exists!', 'Please try again with another username')
-            }
-        })
-        
-        // setCheckButton('Hello')
+    const loginHandle = (username, password) => {
+        signIn(username, password, data.mobile);
     }
 
     return (
         <View style={styles.container}>
             <StatusBar style='auto'/>
             <View style={styles.header}>
-                <Text style={styles.text_header} >Welcome New User!</Text>
+                <Text style={styles.text_header} >Welcome!</Text>
             </View>
 
             <Animatable.View 
                 animation='fadeInUpBig'
                 style={styles.footer}
             >
-                <Text style={styles.text_footer} >What should people call you?</Text>
-                {/* <Text style={styles.text_footer} >This will be used as your address for making payments.</Text> */}
+                <Text style={styles.text_footer} >Phone</Text>
                 <View style={styles.action}>
-                    {/* <FontAwesome 
-                        name="user-o"
+                    <FontAwesome 
+                        name="phone"
                         color={'black'}
-                        size={26}
-                    /> */}
+                        size={28}
+                    />
                     <TextInput 
-                        placeholder='Set Username'
+                        placeholder='Enter you mobile number'
                         style={styles.textInput}
                         autoCapitalize='none'
                         onChangeText={(val) => textInputChange(val)}
-                        // keyboardType='phone-pad'
-                        maxLength={12}
+                        keyboardType='phone-pad'
+                        maxLength={10}
                     />
                     {data.check_textInputChange ?  
 
@@ -244,30 +219,21 @@ export default function SignInScreen({ navigation }) {
                     </TouchableOpacity>
                 </View> */}
 
-                <View style={styles.button}>
+                <View style={styles.Button}>
                     <TouchableOpacity
                         style={styles.signIn}
-                        onPress={() => userNameHandler()}
+                        onPress={() => promptAsync({ useProxy })}
                         disabled={data.disability}
                     >
-                        {/* <LinearGradient
+                        <LinearGradient
                             colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6']}
                             colors={data.disability ? ['#DBEAFE', '#BFDBFE', '#93C5FD'] : ['#889dfd', '#647ef9', '#3e5ef3']}
                             style={styles.signIn}
                         >
                             <Text style={[styles.textSign, {
                                 color: 'white'
-                            }]}>{checkButton}</Text>
-                        </LinearGradient> */}
-
-                        
-                            <Text style={[styles.textSign, {
-                                color: 'white'
-                            }]}>{checkButton}</Text>
-                        
-
-
-
+                            }]}>Continue</Text>
+                        </LinearGradient>
                     </TouchableOpacity>
                     
 
@@ -292,7 +258,7 @@ export default function SignInScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#607af8'
+      backgroundColor: '#4968f5'
     },
     header: {
         flex: 1,
@@ -310,19 +276,17 @@ const styles = StyleSheet.create({
     },
     text_header: {
         color: '#fff',
-        // color: 'black',
         fontWeight: 'bold',
-        fontSize: 32
+        fontSize: 38
     },
     text_footer: {
         color: '#05375a',
-        fontSize: 20,
-        textAlign: 'justify'
+        fontSize: 24
     },
     action: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 20,
+        marginTop: 10,
         // borderBottomWidth: 1,
         borderWidth: 2,
         // borderBottomColor: '#f2f2f2',
@@ -351,17 +315,15 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        // alignContent: 'center',
-        // marginTop: 20,
+        marginTop: 50,
     },
     signIn: {
-        width: '80%',
+        width: '100%',
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
-        marginTop: 10,
-        backgroundColor: '#607af8'
+        marginTop: 20
     },
     textSign: {
         fontSize: 18,

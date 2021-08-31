@@ -78,11 +78,11 @@ export default function SignInScreen({ navigation }) {
             >
                 <Text style={styles.text_footer} >Email</Text>
                 <View style={styles.action}>
-                    <FontAwesome 
+                    {/* <FontAwesome 
                         name="user-o"
                         color={'black'}
                         size={20}
-                    />
+                    /> */}
                     <TextInput 
                         placeholder='Your Email'
                         style={styles.textInput}

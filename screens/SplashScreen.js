@@ -69,8 +69,9 @@ export default function SplashScreen({ navigation }) {
     //     signIn(username, password);
     // }
 
-    const loginHandle = (username, token) => {
-        signIn(username, token);
+    const loginHandle = (token) => {
+        // console.log('Inisde login handle', token)
+        signIn(token);
     }
 
     const [request, result, promptAsync] = AuthSession.useAuthRequest(
@@ -103,10 +104,10 @@ export default function SplashScreen({ navigation }) {
             // Retrieve the JWT token and decode it
             const jwtToken = result.params.id_token;
             const decoded = jwtDecode(jwtToken);
-            console.log('HELOOOOOOOOOO::', decoded)
-            const { aud } = decoded;
-            const { given_name } = decoded;
-            loginHandle(given_name, decoded)
+            // console.log('HELOOOOOOOOOO::THIS IS THE RESULT', decoded)
+            // const { picture } = decoded;
+            // const { name } = decoded;
+            loginHandle(decoded)
             // dispatch({type: 'RETRIEVE_TOKEN', token: aud})
             // console.log
             // setName(name);
@@ -132,33 +133,32 @@ export default function SplashScreen({ navigation }) {
             <StatusBar style='auto'/>
             <View style={styles.header}>
                 <Animatable.Image 
-                    animation='bounceIn'
+                    animation='fadeIn'
                     duraton='1500'
-                    source={require('../assets/icon.png')} 
+                    source={require('../assets/money_transfer.png')} 
                     style={styles.logo}
-                    resizeMode='stretch'
+                    resizeMode='contain'
                 />
             </View>
             <Animatable.View 
                 style={styles.footer} 
                 animation='fadeInUpBig'
             >
-                <Text style={styles.title}>Stay connected with everyone!</Text>
-                <Text style={styles.text}>Sign in with account</Text>
+                <Text style={styles.title}>PAViC</Text>
+                {/* <Text style={styles.text}>Your Crypto Payments App</Text> */}
+                <Text style={styles.text}>Payment App for Vitcoin Cryptocurrency</Text>
                 <View style={styles.button}>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-                    {/* <TouchableOpacity onPress={() => promptAsync({ useProxy })}> */}
-                    {/* <TouchableOpacity onPress={}> */}
+                    <TouchableOpacity onPress={() => promptAsync({ useProxy })}>
                         <LinearGradient
-                            colors={['pink', 'violet']}
+                            colors={['#fff', '#fff']}
                             style={styles.signIn}
                         >
-                            <Text style={styles.textSign}>Get Started</Text>
-                            <MaterialIcons 
+                            <Text style={styles.textSign}>Sign in</Text>
+                            {/* <MaterialIcons 
                                 name='navigate-next'
-                                color='white'
+                                color='black'
                                 size={20}
-                            />
+                            /> */}
                         </LinearGradient>
 
                     </TouchableOpacity>
@@ -169,12 +169,12 @@ export default function SplashScreen({ navigation }) {
 };
 
 const {height} = Dimensions.get("screen");
-const height_logo = height * 0.28;
+const height_logo = height * 0.5;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    backgroundColor: 'pink'
+    backgroundColor: '#FFF'
   },
   header: {
       flex: 2,
@@ -182,29 +182,34 @@ const styles = StyleSheet.create({
       alignItems: 'center'
   },
   footer: {
-      flex: 1,
-      backgroundColor: '#fff',
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      paddingVertical: 50,
-      paddingHorizontal: 30
+      flex: 1.2,
+      backgroundColor: '#607af8',
+      borderTopLeftRadius: 34,
+      borderTopRightRadius: 34,
+      paddingVertical: 40,
+      paddingHorizontal: 30,
+      alignItems: 'center'
   },
   logo: {
+    //   backgroundColor: 'pink',
       width: height_logo,
-      height: height_logo
+      height: height_logo,
+    resizeMode: 'contain'
   },
   title: {
-      color: '#05375a',
-      fontSize: 30,
+      color: '#fff',
+      fontSize: 44,
       fontWeight: 'bold'
   },
   text: {
-      color: 'grey',
-      marginTop:5
+      color: '#fff',
+      marginTop: 5,
+      fontSize: 20,
+      textAlign: 'center'
   },
   button: {
-      alignItems: 'flex-end',
-      marginTop: 30
+      alignItems: 'center',
+      marginTop: 30,
   },
   signIn: {
       width: 150,
@@ -212,10 +217,14 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 50,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      
+    //   padding: 25,
+    paddingVertical: 24,
   },
   textSign: {
-      color: 'white',
-      fontWeight: 'bold'
+      color: 'black',
+      fontWeight: 'bold',
+      fontSize: 18
   }
 });

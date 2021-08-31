@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import socket from '../service/socket';
 
-const db = SQLite.openDatabase('uniqssqqqqquew.db');
+const db = SQLite.openDatabase('ddsassqhai.db');
 
 // socket.once("update blocks", blocks => {
 //     console.log('This is inside UPDATE BLOCKS listener')

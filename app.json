@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "gamezone",
+    "name": "PAViC",
     "slug": "gamezone",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#152348"
+      "backgroundColor": "#FFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,7 +26,7 @@
         "backgroundColor": "#152348"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.kedaroo.gamezone"
+      "package": "com.kedaroo.pave"
     },
     "web": {
       "favicon": "./assets/favicon.png"

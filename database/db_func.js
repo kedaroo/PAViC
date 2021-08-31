@@ -8,7 +8,7 @@ function createUsersTable() {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
-              'CREATE TABLE if NOT EXISTS users (id integer primary key AUTOINCREMENT, name text, user_id text unique, picture text, mobile integer)', 
+              'CREATE TABLE if NOT EXISTS users (id integer primary key AUTOINCREMENT, user_id text unique, picture text, username text unique)', 
                 [], 
                 (_tx, {rows}) => {
                     // console.log('CREATE TABLE users SUCCESS!::', rows)
@@ -16,7 +16,7 @@ function createUsersTable() {
                 }, 
                 () => console.log('CREATE TABLE users FAILED!')
             )
-        }, () => console.log('0 error'), () => console.log('0 SUCCESSFULL'));
+        }, () => console.log('0 CREATE TABLE users error'), () => console.log('0 CREATE TABLE users SUCCESSFULL'));
     })
 }
 
@@ -32,18 +32,18 @@ function updateUsers() {
                 //   resolve(_array)
                 }
             )
-        }, () => console.log('0.1 error'), () => console.log('0.1 SUCCESSFULL'));
+        }, () => console.log('0.1 Update users error'), () => console.log('0.1 UPDATE USERS SUCCESSFULL'));
 
         socket.once("update users", users => {
             console.log('This is inside UPDATE USERS listener')
-            // console.log('RECEIVED USERS::', users)
+            console.log('RECEIVED USERS::', users)
             if (users.data.length != 0) {
                 // console.log(blocks)
                 for (let user of users.data) {
                     db.transaction((tx) => {
                         tx.executeSql(
-                            "INSERT INTO users (name, user_id, picture, mobile) VALUES (?, ?, ?, ?)",
-                            [user.name, user.user_id, user.picture, user.mobile],
+                            "INSERT INTO users (user_id, picture, username) VALUES (?, ?, ?)",
+                            [user.user_id, user.picture, user.username],
                             (_tx, {rows: {_array}}) => console.log(_array)
                         )
                     })
@@ -73,7 +73,7 @@ function createBlocksTable() {
                 }, 
                 () => console.log('CREATE TABLE blocks FAILED!')
             )
-        }, () => console.log('1 error'), () => console.log('1 SUCCESSFULL'));
+        }, () => console.log('1 create table blocks error'), () => console.log('1 create table blocks SUCCESSFULL'));
     })
 }
 
@@ -92,13 +92,13 @@ function addGenesisBlock() {
                                 "INSERT INTO blocks (prev_hash, hash, nonce) VALUES (?, ?, ?)",
                                 ['0', SHA256('0').toString(), 0],
                                 (_tx, {rows: {_array}}) => {
-                                    // console.log('GENESIS BLOCK ADDED::', _array)
+                                    console.log('GENESIS BLOCK ADDED::', _array)
                                     resolve(_array)
                                 }
                             )
                         }, (tx, err) => console.log(err))
                     } else {
-                        // console.log('GENESIS BLOCK NOT ADDED::', _array)
+                        console.log('GENESIS BLOCK NOT ADDED::', _array)
                         resolve(_array)
                     }
                 }
@@ -111,9 +111,8 @@ function addGenesisBlock() {
 function createTransactionsTable() {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
-            tx.executeSql(
-                // 'CREATE TABLE if NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, b_id INTEGER, from_add text, to_add text, amount integer)', 
-                'CREATE TABLE if NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, b_id INTEGER, from_add integer, to_add integer, amount integer)', 
+            tx.executeSql(            
+                'CREATE TABLE if NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, b_id INTEGER, from_add text, to_add text, amount integer)', 
                   [], 
                   (_tx, {rows: {_array}}) => {
                     //   console.log(_array)
@@ -122,27 +121,10 @@ function createTransactionsTable() {
                   }, 
                   () => console.log('CREATE TABLE transactions FAILED!')
             )
-        }, () => console.log('3 error'), () => console.log('3 SUCCESSFULL'));;
+        }, () => console.log('3 create table transactions error'), () => console.log('3 create table transactions SUCCESSFULL'));;
     })
 }
-        
-// // Secondary solution
-// function fetchBlocks() {
-//     return new Promise(function(resolve, reject) {
-//         db.transaction((tx) => {
-//             tx.executeSql(
-//                 'SELECT COUNT(*) FROM blocks',
-//                 [],
-//                 (_tx, {rows: {_array}}) => {
-//                   console.log('FETCH BLOCKS EMITTED SUCCESSFULLYY')
-//                   socket.emit("fetch blocks", _array[0]['COUNT(*)']);
-//                   resolve(_array)
-//                 }
-//             )
-//         }, () => console.log('USE EFFECT TRANSACTION error'), () => console.log('USE EFFECT TRANSACTION SUCCESSFULL'));
-//     })
-// }
-
+    
 // DONE
 function updateBlocks() {
     return new Promise(function(resolve, reject) {
@@ -160,7 +142,7 @@ function updateBlocks() {
 
         socket.once("update blocks", blocks => {
             console.log('This is inside UPDATE BLOCKS listener')
-            // console.log('RECEIVED BLOCKS::', blocks)
+            console.log('RECEIVED BLOCKS::', blocks)
             if (blocks.data.length != 0) {
                 // console.log(blocks)
                 for (let block of blocks.data) {
@@ -178,7 +160,6 @@ function updateBlocks() {
                 console.log('4 BLOCKS UPDATE SUCCSS')
                 resolve(blocks)
             }
-
         })
     });
 }
@@ -196,7 +177,7 @@ function updateTransactions() {
                 //   resolve(_array)
                 }
             )
-        }, () => console.log('5 error'), () => console.log('5 SUCCESSFULL'));
+        }, () => console.log('5 ipdate transactions error'), () => console.log('5 ipdate transactions SUCCESSFULL'));
 
         socket.once("update transactions", transactions => {
             console.log('This is inside UPDATE TRANSACTIONS listener')
@@ -227,21 +208,21 @@ function createPendingTransactionsTable() {
     return new Promise(function(resolve, reject) {
         db.transaction((tx) => {
             tx.executeSql(
-                'CREATE TABLE if NOT EXISTS pending_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, from_add integer, to_add integer, amount integer)', 
+                'CREATE TABLE if NOT EXISTS pending_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, from_add text, to_add text, amount integer)', 
                   [], 
                   (_tx, {rows: {_array}}) => {
-                    console.log('PENDING TRANSACTIONS TABLE CREATE SUCESS::', _array)
+                    // console.log('PENDING TRANSACTIONS TABLE CREATE SUCESS::', _array)
                     resolve(_array)
                   }, 
                   () => console.log('CREATE TABLE pending_transactions FAILED!')
             )
-        }, () => console.log('6 error'), () => console.log('6 SUCCESSFULL'));
+        }, () => console.log('6 create table pending transactions error'), () => console.log('6 create table pending transactions SUCCESSFULL'));
     })
 }
         
-const startUp = (user) => {
+const startUp = () => {
     return new Promise( async function(resolve, reject) {
-        console.log('starting Up..............................................................................')
+        console.log('starting Up..................................................................')
 
         // CREATE TABLE OF USERS
         var usersTable = await createUsersTable()
@@ -267,7 +248,7 @@ const startUp = (user) => {
         // CREATE TABLE OF PENDING TRANSACTIONS
         var pendingTransactionsTable = await createPendingTransactionsTable()
 
-        var balance = await getBalance(user)
+        var balance = await getBalance()
 
         resolve(balance)
     })
